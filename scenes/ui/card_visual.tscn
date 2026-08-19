@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://df2nkijcrwyi1"]
+
+[ext_resource type="Script" uid="uid://dd8cvntwh0nrs" path="res://scripts/ui/card_visual.gd" id="1_w61x7"]
+
+[node name="CardVisual" type="TextureRect" unique_id=998101211]
+offset_right = 40.0
+offset_bottom = 40.0
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("1_w61x7")

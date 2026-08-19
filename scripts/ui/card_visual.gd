@@ -1,0 +1,22 @@
+extends TextureRect
+
+signal card_clicked
+
+var card_data : Card
+var selected : bool
+# Defaults to false
+var card_scale = 4
+
+func _ready() -> void:
+	texture = card_data.art
+	size = Vector2(39 * card_scale, 55 * card_scale)
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.is_pressed():
+		selected = !selected
+		if selected == true:
+			position.y -= 20
+		else:
+			position.y += 20
+		
+		card_clicked.emit()
