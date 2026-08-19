@@ -13,10 +13,10 @@ script = ExtResource("1_hyk8p")
 
 [node name="HandArea" type="Control" parent="." unique_id=486850450]
 layout_mode = 1
-anchor_left = 0.2
+anchor_left = 0.3
 anchor_top = 1.0
-anchor_right = 0.8
+anchor_right = 0.9
 anchor_bottom = 1.0
-offset_top = -230.0
+offset_top = -298.0
 grow_horizontal = 2
 grow_vertical = 0

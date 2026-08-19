@@ -19,12 +19,23 @@ static func build_deck():
 	var deck : Array[Card]
 	for suit in range(0,4):
 		for num in range(1,14):
-			var card : Card = Card.new()
-			card.rank = num
-			card.chips = num
-			card.suit = suit
-			card.name = int_rank_dict.get(num, str(num)) + " of " + str(suit_string_dict.get(suit))
-			var path = "res://assets/Cards/%s/%s.png" % [suit_string_dict.get(suit), int_rank_dict.get(num, str(num)) + "_of_" + str(suit_string_dict.get(suit))]
-			card.art = load(path)
+			var card : Card = build_card(num, suit)
 			deck.append(card)
 	return deck
+	
+static func build_card(card_value : int, suit : int) -> Card:
+	var card : Card = Card.new()
+	card.rank = card_value
+	card.chips = card_value
+	card.suit = suit
+	card.name = int_rank_dict.get(card_value, str(card_value)) + " of " + str(suit_string_dict.get(suit))
+	var path = "res://assets/Cards/%s/%s.png" % [suit_string_dict.get(suit), int_rank_dict.get(card_value, str(card_value)) + "_of_" + str(suit_string_dict.get(suit))]
+	card.art = load(path)
+	return card
+	
+static func build_set(card_value : int, card_count : int) -> Array[Card] :
+	var ladder : Array[Card]
+	for i in card_count:
+		var card : Card = DeckFactory.build_card(card_value, i)
+		ladder.append(card)
+	return ladder
