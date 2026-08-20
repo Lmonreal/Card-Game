@@ -8,4 +8,5 @@ enum Suit {HEART, DIAMOND, SPADE, CLUB}
 @export var suit : Suit
 @export var rank : int
 @export var chips : int
+@export var mult : int
 @export var art : Texture2D

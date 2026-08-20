@@ -35,6 +35,7 @@ static func build_card(card_value : int, suit : int) -> Card:
 	card.rank = card_value
 	card.chips = chip_correction_dict.get(card_value, card_value)
 	card.suit = suit
+	card.mult = 0
 	card.name = int_rank_dict.get(card_value, str(card_value)) + " of " + str(suit_string_dict.get(suit))
 	var path = "res://assets/Cards/%s/%s.png" % [suit_string_dict.get(suit), int_rank_dict.get(card_value, str(card_value)) + "_of_" + str(suit_string_dict.get(suit))]
 	card.art = load(path)
