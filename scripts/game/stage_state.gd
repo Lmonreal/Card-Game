@@ -6,18 +6,24 @@ var deck : Array[Card]
 var hand : Array[Card]
 # Game State
 var steals_left : int = 3
+var ladders_left : int = 3
+var player_cards_this_ladder : Array[Card]
+var house_cards_this_ladder : Array[Card]
 var hand_size : int = 8
 var stage_score : int
 var target_score : int = 300
 var set_in_play : Array[Card]
+var last_reason : Reason
 # House Settings
 var house_ceiling : int = 13 
 var house_opener_rank_cap : int = 5
 var house_opener_count_cap : int = 3
 var house_climb_cap : int = 2
+
 # Enums and Constants
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}
 enum Response {ANSWERED, PASSED}
+enum TurnResult {REJECTED, CONTINUES, CAPPED}
 
 
 func _init() -> void:
@@ -44,6 +50,7 @@ func open_ladder() -> void:
 	var opener_rank = randi_range(2, house_opener_rank_cap)
 	var opener_card_count = randi_range(1, house_opener_count_cap)
 	var house_play : Array[Card] = DeckFactory.build_set(opener_rank, opener_card_count)
+	house_cards_this_ladder.append_array(house_play)
 	set_in_play = house_play
 	
 func respond(players_play : Array[Card]) -> Response:
@@ -51,7 +58,27 @@ func respond(players_play : Array[Card]) -> Response:
 	if response_rank <= house_ceiling:
 		var response_card_count = players_play.size()
 		var response : Array[Card] = DeckFactory.build_set(response_rank, response_card_count)
+		house_cards_this_ladder.append_array(response)
 		set_in_play = response
 		return Response.ANSWERED
 	return Response.PASSED
+	
+
+func play_selected(cards : Array[Card]) -> TurnResult:
+	var verdict : Reason = is_valid_play(cards)
+	if  verdict != Reason.OK:
+		last_reason = verdict
+		return TurnResult.REJECTED
+	for card in cards:
+		player_cards_this_ladder.append(card)
+		hand.erase(card)
+		
+	# House responds
+	var house_answer : Response = respond(cards)
+	if house_answer == Response.ANSWERED:
+		return TurnResult.CONTINUES
+	else:
+		return TurnResult.CAPPED
+		
+	
 	
