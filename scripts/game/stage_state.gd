@@ -14,8 +14,7 @@ var stage_score : int
 var target_score : int = 300
 var set_in_play : Array[Card]
 var last_reason : Reason
-var stage_over : bool
-var won : bool
+var game_state : GameState
 # House Settings
 var house_ceiling : int = 13 
 var house_opener_rank_cap : int = 5
@@ -25,9 +24,10 @@ var house_climb_cap : int = 2
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}
 enum Response {ANSWERED, PASSED}
 enum TurnResult {REJECTED, CONTINUES, CAPPED}
-
+enum GameState {PLAYING, WON, LOST}
 
 func _init() -> void:
+	game_state = GameState.PLAYING
 	deck = DeckFactory.build_deck()
 	deck.shuffle()
 	for i in range(hand_size):
@@ -126,13 +126,15 @@ func _end_ladder():
 	else:
 		open_ladder()
 
+
 func refill_hand():
 	while hand.size() < hand_size and !deck.is_empty():
 		hand.append(deck.pop_back())
 
+
 func stage_won():
-	won = true
-	stage_over = true
+	game_state = GameState.WON
+
 
 func game_over():
-	stage_over = true
+	game_state = GameState.LOST
