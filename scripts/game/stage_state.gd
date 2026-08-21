@@ -18,7 +18,7 @@ var game_state : GameState
 # House Settings
 var house_ceiling : int = 13 
 var house_opener_rank_cap : int = 5
-var house_opener_count_cap : int = 3
+var house_opener_count_cap : int = 1
 var house_climb_cap : int = 2
 # Enums and Constants
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}

@@ -5,7 +5,7 @@ signal card_clicked
 var card_data : Card
 var selected : bool
 # Defaults to false
-var card_scale = 5
+var card_scale = 4
 
 func _ready() -> void:
 	texture = card_data.art
