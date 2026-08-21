@@ -11,6 +11,7 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var play_button: Button = $PlayButton
 @onready var steal_button: Button = $StealButton
 @onready var fold_button: Button = $FoldButton
+@onready var reset_button: Button = $ResetButton
 
 var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
@@ -34,7 +35,7 @@ func _on_play_button_pressed() -> void:
 func _refresh() -> void:
 	_draw_areas()
 	_update_labels()
-	_disable_buttons()
+	_update_buttons()
 
 func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool) -> void :
 	for child in control.get_children():
@@ -55,6 +56,11 @@ func _on_fold_button_pressed() -> void:
 	stage_state.fold(false)
 	_refresh()
 
+func _on_reset_button_pressed() -> void:
+	stage_state = StageState.new()
+	last_turn_result = StageState.TurnResult.CONTINUES
+	_refresh()
+
 func _draw_areas() -> void :
 	_control_refresh_helper(hand_area, stage_state.hand, true)
 	_control_refresh_helper(table_area, stage_state.set_in_play, false)
@@ -72,10 +78,25 @@ func _update_labels() -> void :
 		steals_left.hide()
 		ladders_left.hide()
 		last_reason.hide()
+		message_label.show()
 		message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
+	else:
+		steals_left.show()
+		ladders_left.show()
+		last_reason.show()
+		message_label.hide()
 
-func _disable_buttons() -> void :
+func _update_buttons() -> void :
 	if stage_state.game_state != stage_state.GameState.PLAYING:
 		play_button.disabled = true
 		steal_button.disabled = true
 		fold_button.disabled = true
+		reset_button.show()
+		reset_button.disabled = false
+	else:
+		play_button.disabled = false
+		steal_button.disabled = false
+		fold_button.disabled = false
+		reset_button.hide()
+		reset_button.disabled = true
+	
