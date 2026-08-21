@@ -17,7 +17,7 @@ func _get_selected() -> Array[Card]:
 			result.append(visual.card_data)
 	return result
 
-func _on_button_pressed() -> void:
+func _on_play_button_pressed() -> void:
 	var selected_hand : Array[Card] = _get_selected()
 	last_turn_result = stage_state.play_selected(selected_hand)
 	_refresh()
@@ -37,3 +37,11 @@ func _control_refresh_helper(control : Control, cards : Array[Card], clickable :
 		if cards.size() > 0:
 			card_visual.position.x += i * (control.size.x / cards.size())
 		control.add_child(card_visual)
+
+func _on_steal_button_pressed() -> void:
+	stage_state.fold(true)
+	_refresh()
+
+func _on_fold_button_pressed() -> void:
+	stage_state.fold(false)
+	_refresh()
