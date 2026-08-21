@@ -21,8 +21,26 @@ offset_top = -298.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[node name="TableArea" type="Control" parent="." unique_id=1042919141]
+layout_mode = 1
+anchor_left = 0.4
+anchor_top = 0.3
+anchor_right = 0.6
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="PlayButton" type="Button" parent="." unique_id=189380150]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.8
+anchor_right = 0.2
+anchor_bottom = 0.9
 offset_right = 8.0
 offset_bottom = 8.0
 text = "Play"

@@ -2,7 +2,7 @@ extends Control
 
 const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var hand_area: Control = $HandArea
-
+@onready var table_area: Control = $TableArea
 var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult
 
@@ -23,12 +23,17 @@ func _on_button_pressed() -> void:
 	_refresh()
 
 func _refresh() -> void:
-	for child in hand_area.get_children():
+	_control_refresh_helper(hand_area, stage_state.hand, true)
+	_control_refresh_helper(table_area, stage_state.set_in_play, false)
+
+func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool) -> void :
+	for child in control.get_children():
 		child.queue_free()
-	var increment : float = hand_area.size.x / stage_state.hand.size()
-	for i in range(stage_state.hand.size()):
+	for i in range(cards.size()):
 		var card_visual = CARD_VISUAL.instantiate()
-		card_visual.card_data = stage_state.hand[i]
-		card_visual.position.x += i * increment
-		hand_area.add_child(card_visual)
-	print(stage_state.set_in_play[0].name)
+		if !clickable:
+			card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card_visual.card_data = cards[i]
+		if cards.size() > 0:
+			card_visual.position.x += i * (control.size.x / cards.size())
+		control.add_child(card_visual)
