@@ -96,6 +96,18 @@ anchor_bottom = 0.15
 offset_right = 40.0
 offset_bottom = 23.0
 
+[node name="MessageLabel" type="Label" parent="." unique_id=997853316]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_right = 0.62100005
+anchor_bottom = 0.12100001
+offset_right = -0.32006836
+offset_bottom = 0.31999207
+theme_override_font_sizes/font_size = 64
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="StealButton" to="." method="_on_steal_button_pressed"]
 [connection signal="pressed" from="FoldButton" to="." method="_on_fold_button_pressed"]

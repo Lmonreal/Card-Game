@@ -6,19 +6,19 @@ var deck : Array[Card]
 var hand : Array[Card]
 # Game State
 var steals_left : int = 3
-var ladders_left : int = 3
+var ladders_left : int = 4
 var player_cards_this_ladder : Array[Card]
 var house_cards_this_ladder : Array[Card]
 var hand_size : int = 8
 var stage_score : int
 var target_score : int = 300
 var set_in_play : Array[Card]
-var last_reason : Reason
+var last_reason : Reason = Reason.OK
 var game_state : GameState
 # House Settings
 var house_ceiling : int = 13 
 var house_opener_rank_cap : int = 5
-var house_opener_count_cap : int = 3
+var house_opener_count_cap : int = 2
 var house_climb_cap : int = 2
 # Enums and Constants
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}

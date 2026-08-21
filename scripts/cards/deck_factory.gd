@@ -44,6 +44,6 @@ static func build_card(card_value : int, suit : int) -> Card:
 static func build_set(card_rank : int, card_count : int) -> Array[Card] :
 	var ladder : Array[Card]
 	for i in card_count:
-		var card : Card = DeckFactory.build_card(card_rank, i)
+		var card : Card = DeckFactory.build_card(card_rank, i % 4)
 		ladder.append(card)
 	return ladder

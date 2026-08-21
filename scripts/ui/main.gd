@@ -7,9 +7,13 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var steals_left: Label = $StealsLeft
 @onready var ladders_left: Label = $LaddersLeft
 @onready var last_reason: Label = $LastReason
+@onready var message_label: Label = $MessageLabel
+@onready var play_button: Button = $PlayButton
+@onready var steal_button: Button = $StealButton
+@onready var fold_button: Button = $FoldButton
 
 var stage_state : StageState = StageState.new()
-var last_turn_result : StageState.TurnResult
+var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 
 
 func _ready() -> void:
@@ -30,6 +34,7 @@ func _on_play_button_pressed() -> void:
 func _refresh() -> void:
 	_draw_areas()
 	_update_labels()
+	_disable_buttons()
 
 func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool) -> void :
 	for child in control.get_children():
@@ -39,8 +44,7 @@ func _control_refresh_helper(control : Control, cards : Array[Card], clickable :
 		if !clickable:
 			card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card_visual.card_data = cards[i]
-		if cards.size() > 0:
-			card_visual.position.x += i * (control.size.x / cards.size())
+		card_visual.position.x += i * (control.size.x / cards.size())
 		control.add_child(card_visual)
 
 func _on_steal_button_pressed() -> void:
@@ -59,5 +63,19 @@ func _update_labels() -> void :
 	stage_target.text = "%d / %d" % [stage_state.stage_score, stage_state.target_score]
 	steals_left.text = str(stage_state.steals_left) + " steals left"
 	ladders_left.text = str(stage_state.ladders_left) + " ladders left"
-	last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
-	
+	if last_turn_result == StageState.TurnResult.REJECTED:
+		last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
+	else:
+		last_reason.text = ""
+	if stage_state.game_state != stage_state.GameState.PLAYING:
+		# stage_target.hide() <- Commented out cuz its more fun to see your score.
+		steals_left.hide()
+		ladders_left.hide()
+		last_reason.hide()
+		message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
+
+func _disable_buttons() -> void :
+	if stage_state.game_state != stage_state.GameState.PLAYING:
+		play_button.disabled = true
+		steal_button.disabled = true
+		fold_button.disabled = true
