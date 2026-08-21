@@ -25,6 +25,7 @@ enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}
 enum Response {ANSWERED, PASSED}
 enum TurnResult {REJECTED, CONTINUES, CAPPED}
 enum GameState {PLAYING, WON, LOST}
+# Signals
 
 func _init() -> void:
 	game_state = GameState.PLAYING

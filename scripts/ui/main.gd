@@ -3,6 +3,11 @@ extends Control
 const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var hand_area: Control = $HandArea
 @onready var table_area: Control = $TableArea
+@onready var stage_target: Label = $StageTarget
+@onready var steals_left: Label = $StealsLeft
+@onready var ladders_left: Label = $LaddersLeft
+@onready var last_reason: Label = $LastReason
+
 var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult
 
@@ -23,8 +28,8 @@ func _on_play_button_pressed() -> void:
 	_refresh()
 
 func _refresh() -> void:
-	_control_refresh_helper(hand_area, stage_state.hand, true)
-	_control_refresh_helper(table_area, stage_state.set_in_play, false)
+	_draw_areas()
+	_update_labels()
 
 func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool) -> void :
 	for child in control.get_children():
@@ -45,3 +50,14 @@ func _on_steal_button_pressed() -> void:
 func _on_fold_button_pressed() -> void:
 	stage_state.fold(false)
 	_refresh()
+
+func _draw_areas() -> void :
+	_control_refresh_helper(hand_area, stage_state.hand, true)
+	_control_refresh_helper(table_area, stage_state.set_in_play, false)
+
+func _update_labels() -> void :
+	stage_target.text = "%d / %d" % [stage_state.stage_score, stage_state.target_score]
+	steals_left.text = str(stage_state.steals_left) + " steals left"
+	ladders_left.text = str(stage_state.ladders_left) + " ladders left"
+	last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
+	

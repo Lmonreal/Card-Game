@@ -67,6 +67,35 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Fold"
 
+[node name="StageTarget" type="Label" parent="." unique_id=1884920626]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="StealsLeft" type="Label" parent="." unique_id=963131870]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.05
+anchor_bottom = 0.05
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="LaddersLeft" type="Label" parent="." unique_id=1660357436]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_bottom = 0.1
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="LastReason" type="Label" parent="." unique_id=80074285]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+anchor_bottom = 0.15
+offset_right = 40.0
+offset_bottom = 23.0
+
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="StealButton" to="." method="_on_steal_button_pressed"]
 [connection signal="pressed" from="FoldButton" to="." method="_on_fold_button_pressed"]
