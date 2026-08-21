@@ -35,7 +35,7 @@ func _on_play_button_pressed() -> void:
 func _refresh() -> void:
 	_draw_areas()
 	_update_labels()
-	_update_buttons()
+	_update_visibility()
 
 func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool) -> void :
 	for child in control.get_children():
@@ -73,30 +73,18 @@ func _update_labels() -> void :
 		last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
 	else:
 		last_reason.text = ""
-	if stage_state.game_state != stage_state.GameState.PLAYING:
-		# stage_target.hide() <- Commented out cuz its more fun to see your score.
-		steals_left.hide()
-		ladders_left.hide()
-		last_reason.hide()
-		message_label.show()
-		message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
-	else:
-		steals_left.show()
-		ladders_left.show()
-		last_reason.show()
-		message_label.hide()
+	message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
 
-func _update_buttons() -> void :
-	if stage_state.game_state != stage_state.GameState.PLAYING:
-		play_button.disabled = true
-		steal_button.disabled = true
-		fold_button.disabled = true
-		reset_button.show()
-		reset_button.disabled = false
-	else:
-		play_button.disabled = false
-		steal_button.disabled = false
-		fold_button.disabled = false
-		reset_button.hide()
-		reset_button.disabled = true
-	
+
+func _update_visibility() -> void :
+	var playing : bool = stage_state.game_state == StageState.GameState.PLAYING
+	# Buttons
+	play_button.disabled = not playing
+	steal_button.disabled = not playing
+	fold_button.disabled = not playing
+	reset_button.visible = not playing
+	# Labels
+	steals_left.visible = playing
+	ladders_left.visible = playing
+	last_reason.visible = playing
+	message_label.visible = not playing
