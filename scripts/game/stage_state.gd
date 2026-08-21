@@ -32,6 +32,7 @@ func _init() -> void:
 	deck.shuffle()
 	for i in range(hand_size):
 		hand.append(deck.pop_back())
+	open_ladder()
 
 func is_valid_play(played_hand : Array[Card]) -> Reason:
 	if (played_hand.is_empty()):
