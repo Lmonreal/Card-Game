@@ -8,3 +8,5 @@ offset_bottom = 40.0
 expand_mode = 1
 stretch_mode = 4
 script = ExtResource("1_w61x7")
+
+[connection signal="card_dropped" from="." to="." method="_on_card_dropped"]

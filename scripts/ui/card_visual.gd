@@ -1,10 +1,13 @@
 extends TextureRect
 
-signal card_clicked
+signal card_clicked(card : Card, selec : bool)
+signal card_dropped(card_visual, drop_position)
 
 var card_data : Card
 var selected : bool
-# Defaults to false
+var dragging : bool
+var drag_offset : Vector2
+var home_pos : Vector2
 var card_scale = 4
 
 func _ready() -> void:
@@ -12,11 +15,30 @@ func _ready() -> void:
 	size = texture.get_size() * card_scale
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.is_pressed():
-		selected = !selected
-		if selected == true:
-			position.y -= 20
+	
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		home_pos = position
+		drag_offset = get_parent().get_local_mouse_position() - home_pos
+		dragging = true
+		z_index = 1
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and dragging:
+		position = get_parent().get_local_mouse_position() - drag_offset
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and dragging:
+		dragging = false
+		z_index = 0
+		var dist_dragged : float = (position - home_pos).length()
+		if dist_dragged > 20:
+			card_dropped.emit(self, position)
 		else:
-			position.y += 20
-		
-		card_clicked.emit()
+			position = home_pos
+			set_selected(!selected)
+			card_clicked.emit(card_data, selected)
+
+func set_selected(select : bool) -> void:
+	selected = select
+	if select:
+		position.y = -20
+	else:
+		position.y = 0

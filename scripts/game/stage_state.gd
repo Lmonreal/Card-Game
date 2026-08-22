@@ -149,3 +149,8 @@ func _rank_desc(a : Card, b : Card) -> bool:
 
 func sort_hand() -> void :
 	hand.sort_custom(_rank_desc)
+
+func move_card(from : int, to : int) -> void:
+	var card : Card = hand.get(from)
+	hand.remove_at(from)
+	hand.insert(to, card)

@@ -15,21 +15,19 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 
 var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
+var selected_cards : Array[Card] = []
 
 
 func _ready() -> void:
 	_refresh()
 	
 func _get_selected() -> Array[Card]:
-	var result : Array[Card]
-	for visual in hand_area.get_children():
-		if visual.selected:
-			result.append(visual.card_data)
-	return result
+	return selected_cards
 
 func _on_play_button_pressed() -> void:
 	var selected_hand : Array[Card] = _get_selected()
 	last_turn_result = stage_state.play_selected(selected_hand)
+	selected_cards.clear()
 	_refresh()
 
 func _refresh() -> void:
@@ -42,11 +40,19 @@ func _control_refresh_helper(control : Control, cards : Array[Card], clickable :
 		child.queue_free()
 	for i in range(cards.size()):
 		var card_visual = CARD_VISUAL.instantiate()
+		if clickable:
+			card_visual.card_dropped.connect(_on_card_dropped)
+			card_visual.card_clicked.connect(_on_card_clicked)
 		if !clickable:
 			card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card_visual.card_data = cards[i]
-		card_visual.position.x += i * (control.size.x / cards.size())
+		card_visual.position = _slot_position(i, cards.size(), control)
+		if card_visual.card_data in selected_cards:
+			card_visual.set_selected(true)
 		control.add_child(card_visual)
+
+func _slot_position(index : int, card_count : int, area : Control) -> Vector2:
+	return Vector2(index * (area.size.x / card_count), 0)
 
 func _on_steal_button_pressed() -> void:
 	stage_state.fold(true)
@@ -92,3 +98,20 @@ func _update_visibility() -> void :
 	ladders_left.visible = playing
 	last_reason.visible = playing
 	message_label.visible = not playing
+
+
+func _on_card_dropped(card_visual: Control, drop_position: Vector2) -> void:
+	if Rect2(Vector2.ZERO, hand_area.size).grow_individual(200, 200, 200, 0).has_point(drop_position):
+		var center_x : float = drop_position.x + card_visual.size.x / 2
+		var to : int = clamp(int(center_x / (hand_area.size.x / stage_state.hand.size())), 0, stage_state.hand.size() - 1)
+		var from : int = stage_state.hand.find(card_visual.card_data)
+		stage_state.move_card(from,to)
+		_refresh()
+	else:
+		_refresh()
+
+func _on_card_clicked(card : Card, selected : bool) -> void:
+	if selected:
+		selected_cards.append(card)
+	else:
+		selected_cards.erase(card)
