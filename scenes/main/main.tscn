@@ -3,24 +3,26 @@
 [ext_resource type="Script" uid="uid://c2byppiqmp8lr" path="res://scripts/ui/main.gd" id="1_hyk8p"]
 [ext_resource type="Shader" uid="uid://dcjbliq43iypp" path="res://assets/PatternMix/shader_background.gdshader" id="2_k2fmo"]
 [ext_resource type="Texture2D" uid="uid://cwy0xwuppu0gr" path="res://assets/PatternMix/color/wool.png" id="3_k2fmo"]
+[ext_resource type="FontFile" uid="uid://ouhmp1eykgt4" path="res://assets/fonts/Logic_Loop.ttf" id="4_6q06x"]
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
+[ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c7e0"]
 shader = ExtResource("2_k2fmo")
 shader_parameter/pixelated = true
-shader_parameter/pattern_speed = Vector2(0.5, 0.25)
+shader_parameter/pattern_speed = Vector2(0, 0)
 shader_parameter/pattern_size = Vector2(4, 4)
 shader_parameter/rotation = 0.0
 shader_parameter/rotation_speed = -0.010000089184480032
 shader_parameter/rotation_center = Vector2(30, 15)
 shader_parameter/wave_intensity = Vector2(0.2, 0.3)
-shader_parameter/wave_speed = Vector2(1, 1)
+shader_parameter/wave_speed = Vector2(0.5, 0.5)
 shader_parameter/wave_size = Vector2(5, 5)
 shader_parameter/scanline_color = Color(1, 1, 1, 0)
-shader_parameter/scanline_size = 1.9999999701972602
-shader_parameter/scanline_speed = 0.09999997541280004
+shader_parameter/scanline_size = 1.0
+shader_parameter/scanline_speed = 0.0
 shader_parameter/gradient_amount = 0.0
-shader_parameter/gradient_speed = 0.33999999240032
+shader_parameter/gradient_speed = 0.13999999687072
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6q06x"]
 shader = ExtResource("4_l3cfh")
@@ -82,6 +84,8 @@ anchor_right = 0.2
 anchor_bottom = 0.9
 offset_right = 8.0
 offset_bottom = 8.0
+theme_override_fonts/font = ExtResource("4_6q06x")
+theme_override_font_sizes/font_size = 32
 text = "Play"
 
 [node name="StealButton" type="Button" parent="." unique_id=195481847]
@@ -93,6 +97,8 @@ anchor_right = 0.2
 anchor_bottom = 0.75
 offset_right = 8.0
 offset_bottom = 8.0
+theme_override_fonts/font = ExtResource("4_6q06x")
+theme_override_font_sizes/font_size = 32
 text = "Steal"
 
 [node name="FoldButton" type="Button" parent="." unique_id=1099704752]
@@ -104,6 +110,8 @@ anchor_right = 0.2
 anchor_bottom = 0.6
 offset_right = 8.0
 offset_bottom = 8.0
+theme_override_fonts/font = ExtResource("4_6q06x")
+theme_override_font_sizes/font_size = 32
 text = "Fold"
 
 [node name="ResetButton" type="Button" parent="." unique_id=767702143]
@@ -115,13 +123,33 @@ anchor_right = 0.55
 anchor_bottom = 0.5
 offset_right = 8.0
 offset_bottom = 8.0
+theme_override_fonts/font = ExtResource("4_6q06x")
+theme_override_font_sizes/font_size = 32
 text = "RESET"
+
+[node name="SortButton" type="Button" parent="." unique_id=2081570337]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.55
+anchor_top = 0.96500003
+anchor_right = 0.577
+anchor_bottom = 1.0
+offset_top = -0.20007324
+offset_right = -0.8400879
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("5_ow5a4")
+theme_override_font_sizes/font_size = 16
+text = "Sort"
 
 [node name="StageTarget" type="Label" parent="." unique_id=1884920626]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
+theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_6q06x")
+theme_override_font_sizes/font_size = 32
 
 [node name="StealsLeft" type="Label" parent="." unique_id=963131870]
 layout_mode = 1
@@ -130,7 +158,9 @@ anchor_top = 0.05
 anchor_bottom = 0.05
 offset_right = 40.0
 offset_bottom = 23.0
+theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
 
 [node name="LaddersLeft" type="Label" parent="." unique_id=1660357436]
 layout_mode = 1
@@ -139,7 +169,9 @@ anchor_top = 0.1
 anchor_bottom = 0.1
 offset_right = 40.0
 offset_bottom = 23.0
+theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
 
 [node name="LastReason" type="Label" parent="." unique_id=80074285]
 layout_mode = 1
@@ -158,6 +190,7 @@ anchor_right = 0.62100005
 anchor_bottom = 0.12100001
 offset_right = -0.32006836
 offset_bottom = 0.31999207
+theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 64
 horizontal_alignment = 1
@@ -178,3 +211,4 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="StealButton" to="." method="_on_steal_button_pressed"]
 [connection signal="pressed" from="FoldButton" to="." method="_on_fold_button_pressed"]
 [connection signal="pressed" from="ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="SortButton" to="." method="_on_sort_button_pressed"]

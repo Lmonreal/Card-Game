@@ -61,6 +61,10 @@ func _on_reset_button_pressed() -> void:
 	last_turn_result = StageState.TurnResult.CONTINUES
 	_refresh()
 
+func _on_sort_button_pressed() -> void:
+	stage_state.sort_hand()
+	_refresh()
+
 func _draw_areas() -> void :
 	_control_refresh_helper(hand_area, stage_state.hand, true)
 	_control_refresh_helper(table_area, stage_state.set_in_play, false)

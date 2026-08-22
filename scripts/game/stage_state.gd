@@ -34,6 +34,7 @@ func _init() -> void:
 	for i in range(hand_size):
 		hand.append(deck.pop_back())
 	open_ladder()
+	sort_hand()
 
 func is_valid_play(played_hand : Array[Card]) -> Reason:
 	if (played_hand.is_empty()):
@@ -121,6 +122,7 @@ func _end_ladder():
 	set_in_play.clear()
 	ladders_left -= 1
 	refill_hand()
+	sort_hand()
 	if stage_score >= target_score:
 		stage_won()
 	elif ladders_left <= 0:
@@ -140,3 +142,10 @@ func stage_won():
 
 func game_over():
 	game_state = GameState.LOST
+
+
+func _rank_desc(a : Card, b : Card) -> bool:
+	return a.rank > b.rank
+
+func sort_hand() -> void :
+	hand.sort_custom(_rank_desc)
