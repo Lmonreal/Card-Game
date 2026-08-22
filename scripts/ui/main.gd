@@ -25,7 +25,7 @@ func _get_selected() -> Array[Card]:
 	return selected_cards
 
 func _on_play_button_pressed() -> void:
-	var selected_hand : Array[Card] = _get_selected()
+	var selected_hand : Array[Card] = _get_selected().duplicate()
 	last_turn_result = stage_state.play_selected(selected_hand)
 	selected_cards.clear()
 	_refresh()
@@ -56,15 +56,18 @@ func _slot_position(index : int, card_count : int, area : Control) -> Vector2:
 
 func _on_steal_button_pressed() -> void:
 	stage_state.fold(true)
+	selected_cards.clear()
 	_refresh()
 
 func _on_fold_button_pressed() -> void:
 	stage_state.fold(false)
+	selected_cards.clear()
 	_refresh()
 
 func _on_reset_button_pressed() -> void:
 	stage_state = StageState.new()
 	last_turn_result = StageState.TurnResult.CONTINUES
+	selected_cards.clear()
 	_refresh()
 
 func _on_sort_button_pressed() -> void:
