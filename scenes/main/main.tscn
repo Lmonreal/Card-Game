@@ -150,36 +150,62 @@ theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_6q06x")
 theme_override_font_sizes/font_size = 32
+text = "TEST"
+
+[node name="LastScore" type="Label" parent="." unique_id=40506875]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.002
+anchor_top = 0.054
+anchor_right = 0.032
+anchor_bottom = 0.081
+offset_left = -0.84000015
+offset_top = -0.3199997
+offset_right = -0.44000244
+offset_bottom = 0.51999664
+theme = ExtResource("5_ow5a4")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_6q06x")
+theme_override_font_sizes/font_size = 16
+text = "+test"
 
 [node name="StealsLeft" type="Label" parent="." unique_id=963131870]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.05
 anchor_bottom = 0.05
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 2.0
+offset_top = 48.0
+offset_right = 45.0
+offset_bottom = 78.0
 theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 16
+text = "Test"
 
 [node name="LaddersLeft" type="Label" parent="." unique_id=1660357436]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.1
 anchor_bottom = 0.1
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 2.0
+offset_top = 27.0
+offset_right = 45.0
+offset_bottom = 57.0
 theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 16
+text = "Test"
 
 [node name="LastReason" type="Label" parent="." unique_id=80074285]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
 anchor_bottom = 0.15
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 4.0
+offset_top = 6.0
+offset_right = 44.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="MessageLabel" type="Label" parent="." unique_id=997853316]
@@ -197,6 +223,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=95099679]
+visible = false
 z_index = 10
 material = SubResource("ShaderMaterial_6q06x")
 layout_mode = 1

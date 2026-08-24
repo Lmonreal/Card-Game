@@ -13,6 +13,7 @@ var stage_score : int
 var target_score : int = 300
 var last_reason : Reason = Reason.OK
 var game_state : GameState
+var last_ladder_score : int
 # House Settings
 var house_ceiling : int = 13 
 var house_opener_rank_cap : int = 5
@@ -79,7 +80,8 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 	if house_answer == Response.ANSWERED:
 		return TurnResult.CONTINUES
 	else:
-		stage_score += calc_ladder_score(true)
+		last_ladder_score = calc_ladder_score(true)
+		stage_score += last_ladder_score
 		_end_ladder()
 		return TurnResult.CAPPED
 
@@ -105,7 +107,8 @@ func calc_ladder_score(include_house_claim : bool) -> int:
 func fold(is_stealing : bool) -> void:
 	if is_stealing and steals_left > 0:
 		hand.append_array(get_set_in_play())
-		stage_score += calc_ladder_score(false)
+		last_ladder_score = calc_ladder_score(false)
+		stage_score += last_ladder_score
 		steals_left -= 1
 	_end_ladder()
 

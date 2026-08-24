@@ -12,6 +12,7 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var steal_button: Button = $StealButton
 @onready var fold_button: Button = $FoldButton
 @onready var reset_button: Button = $ResetButton
+@onready var last_score: Label = $LastScore
 
 var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
@@ -84,6 +85,7 @@ func _update_labels() -> void :
 	stage_target.text = "%d / %d" % [stage_state.stage_score, stage_state.target_score]
 	steals_left.text = str(stage_state.steals_left) + " steals left"
 	ladders_left.text = str(stage_state.ladders_left) + " ladders left"
+	last_score.text = "+" + str(stage_state.last_ladder_score)
 	if last_turn_result == StageState.TurnResult.REJECTED:
 		last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
 	else:
