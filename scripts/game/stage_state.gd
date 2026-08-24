@@ -7,12 +7,10 @@ var hand : Array[Card]
 # Game State
 var steals_left : int = 3
 var ladders_left : int = 4
-var player_cards_this_ladder : Array[Card]
-var house_cards_this_ladder : Array[Card]
+var ladder : Array[Play]
 var hand_size : int = 8
 var stage_score : int
 var target_score : int = 300
-var set_in_play : Array[Card]
 var last_reason : Reason = Reason.OK
 var game_state : GameState
 # House Settings
@@ -43,10 +41,10 @@ func is_valid_play(played_hand : Array[Card]) -> Reason:
 	for card in played_hand:
 		if card.rank != played_set_rank:
 			return Reason.MIXED_RANKS
-	if set_in_play.size() != 0:
-		if played_hand.size() != set_in_play.size():
+	if get_set_in_play().size() != 0:
+		if played_hand.size() != get_set_in_play().size():
 			return Reason.WRONG_COUNT
-		if played_set_rank <= set_in_play[0].rank:
+		if played_set_rank <= get_set_in_play()[0].rank:
 			return Reason.TOO_LOW
 	return Reason.OK
 
@@ -54,27 +52,26 @@ func open_ladder() -> void:
 	var opener_rank = randi_range(2, house_opener_rank_cap)
 	var opener_card_count = randi_range(1, house_opener_count_cap)
 	var house_play : Array[Card] = DeckFactory.build_set(opener_rank, opener_card_count)
-	house_cards_this_ladder.append_array(house_play)
-	set_in_play = house_play
+	_record_play(Play.Who.HOUSE, house_play)
 	
 func respond(players_play : Array[Card]) -> Response:
 	var response_rank = players_play[0].rank + randi_range(1, house_climb_cap)
 	if response_rank <= house_ceiling:
 		var response_card_count = players_play.size()
 		var response : Array[Card] = DeckFactory.build_set(response_rank, response_card_count)
-		house_cards_this_ladder.append_array(response)
-		set_in_play = response
+		_record_play(Play.Who.HOUSE, response)
 		return Response.ANSWERED
 	return Response.PASSED
 	
 
 func play_selected(cards : Array[Card]) -> TurnResult:
 	var verdict : Reason = is_valid_play(cards)
+	
 	if  verdict != Reason.OK:
 		last_reason = verdict
 		return TurnResult.REJECTED
+	_record_play(Play.Who.PLAYER, cards)
 	for card in cards:
-		player_cards_this_ladder.append(card)
 		hand.erase(card)
 		
 	# House responds
@@ -90,36 +87,31 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 func calc_ladder_score(include_house_claim : bool) -> int:
 	var scored_chips : int = 0
 	var scored_mult : int = 0
-	if include_house_claim:
-		scored_chips += sum_chips(house_cards_this_ladder)
-	for card in player_cards_this_ladder:
-		scored_chips += card.chips
-		scored_mult += 1 + card.mult
+	for play in ladder:
+		if play.who == Play.Who.HOUSE and include_house_claim:
+			for card in play.cards:
+				scored_chips += card.chips
+	
+		if play.who == Play.Who.PLAYER:
+			for card in play.cards:
+				scored_chips += card.chips
+				scored_mult += 1
 	var ladder_score : int = scored_chips * scored_mult
 	if hand.is_empty():
 		ladder_score = ladder_score * 2
 	return ladder_score
 
 
-func sum_chips(cards : Array[Card]) -> int:
-	var scored_chips : int = 0
-	for card in cards:
-		scored_chips += card.chips
-	return scored_chips
-
-
 func fold(is_stealing : bool) -> void:
 	if is_stealing and steals_left > 0:
-		hand.append_array(set_in_play)
+		hand.append_array(get_set_in_play())
 		stage_score += calc_ladder_score(false)
 		steals_left -= 1
 	_end_ladder()
 
 
 func _end_ladder():
-	player_cards_this_ladder.clear()
-	house_cards_this_ladder.clear()
-	set_in_play.clear()
+	ladder.clear()
 	ladders_left -= 1
 	refill_hand()
 	sort_hand()
@@ -154,3 +146,15 @@ func move_card(from : int, to : int) -> void:
 	var card : Card = hand.get(from)
 	hand.remove_at(from)
 	hand.insert(to, card)
+
+func get_set_in_play() -> Array[Card] :
+	if ladder.size() > 0:
+		return ladder.back().cards
+	var empty : Array[Card] = []
+	return empty
+
+func _record_play(who : Play.Who, cards : Array[Card]) -> void:
+	var play : Play = Play.new()
+	play.who = who
+	play.cards = cards
+	ladder.append(play)

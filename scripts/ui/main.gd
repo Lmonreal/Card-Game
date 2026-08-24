@@ -78,7 +78,7 @@ func _on_sort_button_pressed() -> void:
 
 func _draw_areas() -> void :
 	_control_refresh_helper(hand_area, stage_state.hand, true)
-	_control_refresh_helper(table_area, stage_state.set_in_play, false)
+	_control_refresh_helper(table_area, stage_state.get_set_in_play(), false)
 
 func _update_labels() -> void :
 	stage_target.text = "%d / %d" % [stage_state.stage_score, stage_state.target_score]
@@ -137,7 +137,7 @@ func _shift_neighbors(dragged : Control, slot : int) -> void:
 		var target : Vector2 = _slot_position(index, preview.size(), hand_area)
 		if visual.selected:
 			target.y = -20
-		create_tween().tween_property(visual, "position", target, 0.1)
+		create_tween().tween_property(visual, "position", target, 0.1).set_trans(Tween.TRANS_CUBIC)
 
 func _on_card_dropped(card_visual : Control, drop_position : Vector2) -> void:
 	hover_slot = -1
