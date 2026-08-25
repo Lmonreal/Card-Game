@@ -4,6 +4,9 @@ class_name StageState
 # Player Cards
 var deck : Array[Card]
 var hand : Array[Card]
+# House Cards
+var house_deck : Array[Card]
+var house_hand : Array[Card]
 # Game State
 var steals_left : int = 3
 var ladders_left : int = 4
@@ -29,11 +32,14 @@ enum GameState {PLAYING, WON, LOST}
 func _init() -> void:
 	game_state = GameState.PLAYING
 	deck = DeckFactory.build_deck()
+	house_deck = DeckFactory.build_deck()
 	deck.shuffle()
-	for i in range(hand_size):
-		hand.append(deck.pop_back())
+	house_deck.shuffle()
+	refill_hand(hand, deck)
+	refill_hand(house_hand, house_deck)
 	open_ladder()
-	sort_hand()
+	sort_hand(hand)
+	sort_hand(house_hand)
 
 func is_valid_play(played_hand : Array[Card]) -> Reason:
 	if (played_hand.is_empty()):
@@ -118,8 +124,10 @@ func fold(is_stealing : bool) -> void:
 func _end_ladder():
 	ladder.clear()
 	ladders_left -= 1
-	refill_hand()
-	sort_hand()
+	refill_hand(hand, deck)
+	refill_hand(house_hand, house_deck)
+	sort_hand(hand)
+	sort_hand(house_hand)
 	if stage_score >= target_score:
 		stage_won()
 	elif ladders_left <= 0:
@@ -128,9 +136,9 @@ func _end_ladder():
 		open_ladder()
 
 
-func refill_hand():
-	while hand.size() < hand_size and !deck.is_empty():
-		hand.append(deck.pop_back())
+func refill_hand(target_hand : Array[Card], source_deck : Array[Card]):
+	while target_hand.size() < hand_size and !source_deck.is_empty():
+		target_hand.append(source_deck.pop_back())
 
 
 func stage_won():
@@ -144,8 +152,8 @@ func game_over():
 func _rank_desc(a : Card, b : Card) -> bool:
 	return a.rank > b.rank
 
-func sort_hand() -> void :
-	hand.sort_custom(_rank_desc)
+func sort_hand(target_hand : Array[Card]) -> void :
+	target_hand.sort_custom(_rank_desc)
 
 func move_card(from : int, to : int) -> void:
 	var card : Card = hand.get(from)
