@@ -17,11 +17,6 @@ var target_score : int = 300
 var last_reason : Reason = Reason.OK
 var game_state : GameState
 var last_ladder_score : int
-# House Settings
-var house_ceiling : int = 13 
-var house_opener_rank_cap : int = 5
-var house_opener_count_cap : int = 2
-var house_climb_cap : int = 2
 # Enums and Constants
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}
 enum Response {ANSWERED, PASSED}
@@ -56,18 +51,18 @@ func is_valid_play(played_hand : Array[Card]) -> Reason:
 	return Reason.OK
 
 func open_ladder() -> void:
-	var opener_rank = randi_range(2, house_opener_rank_cap)
-	var opener_card_count = randi_range(1, house_opener_count_cap)
-	var house_play : Array[Card] = DeckFactory.build_set(opener_rank, opener_card_count)
+	var house_play : Array[Card] = _lowest_full_set(_sets_in_hand(house_hand))
+	for card in house_play:
+		house_hand.erase(card)
 	_record_play(Play.Who.HOUSE, house_play)
 	
 func respond(players_play : Array[Card]) -> Response:
-	var response_rank = players_play[0].rank + randi_range(1, house_climb_cap)
-	if response_rank <= house_ceiling:
-		var response_card_count = players_play.size()
-		var response : Array[Card] = DeckFactory.build_set(response_rank, response_card_count)
-		_record_play(Play.Who.HOUSE, response)
-		return Response.ANSWERED
+	for possible_set in _sets_in_hand(house_hand):
+		if possible_set.size() == players_play.size() and possible_set[0].rank > players_play[0].rank :
+			for card in possible_set:
+				house_hand.erase(card)
+			_record_play(Play.Who.HOUSE, possible_set)
+			return Response.ANSWERED
 	return Response.PASSED
 	
 
@@ -171,3 +166,33 @@ func _record_play(who : Play.Who, cards : Array[Card]) -> void:
 	play.who = who
 	play.cards = cards
 	ladder.append(play)
+
+func _sets_in_hand(target_hand : Array[Card]) -> Array[Array] :
+	var temp_hand : Array[Card] = target_hand.duplicate()
+	temp_hand.sort_custom(_rank_desc)
+	temp_hand.reverse()
+	var all_sets : Array[Array] = []
+	var cur_set : Array[Card] = []
+	if temp_hand.is_empty():
+		return all_sets
+	var cur_rank : int = temp_hand.get(0).rank
+	for card in temp_hand:
+		if card.rank != cur_rank:
+			cur_rank = card.rank
+			cur_set.clear()
+		cur_set.append(card)
+		all_sets.append(cur_set.duplicate())
+	return all_sets
+
+func _lowest_full_set(all_sets : Array[Array]) -> Array[Card] :
+	if all_sets.is_empty():
+		var empty : Array[Card] = []
+		return empty
+	var lowest_rank : int = all_sets[0][0].rank
+	var candidate : Array[Card]
+	for subset in all_sets:
+		if subset[0].rank == lowest_rank:
+			candidate = subset
+		else:
+			break
+	return candidate

@@ -74,7 +74,7 @@ func _on_reset_button_pressed() -> void:
 	_refresh()
 
 func _on_sort_button_pressed() -> void:
-	stage_state.sort_hand()
+	stage_state.sort_hand(stage_state.hand)
 	_refresh()
 
 func _draw_areas() -> void :
