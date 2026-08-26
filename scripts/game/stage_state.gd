@@ -27,8 +27,8 @@ enum GameState {PLAYING, WON, LOST}
 
 func _init() -> void:
 	game_state = GameState.PLAYING
-	deck = DeckFactory.build_deck()
-	house_deck = DeckFactory.build_deck()
+	deck = DeckFactory.build_deck("deck_1_red")
+	house_deck = DeckFactory.build_deck("deck_1_black")
 	deck.shuffle()
 	house_deck.shuffle()
 	refill_hand(hand, deck)

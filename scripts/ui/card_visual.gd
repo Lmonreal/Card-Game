@@ -10,9 +10,13 @@ var dragging : bool
 var drag_offset : Vector2
 var home_pos : Vector2
 var card_scale = 4
+var face_down : bool
 
 func _ready() -> void:
-	texture = card_data.art
+	if face_down:
+		texture = card_data.back
+	else:
+		texture = card_data.front
 	size = texture.get_size() * card_scale
 
 func _gui_input(event: InputEvent) -> void:

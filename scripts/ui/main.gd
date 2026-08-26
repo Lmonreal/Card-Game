@@ -13,6 +13,7 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var fold_button: Button = $FoldButton
 @onready var reset_button: Button = $ResetButton
 @onready var last_score: Label = $LastScore
+@onready var house_area: Control = $HouseArea
 
 var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
@@ -37,7 +38,7 @@ func _refresh() -> void:
 	_update_labels()
 	_update_visibility()
 
-func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool) -> void :
+func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool, face_down : bool) -> void :
 	for child in control.get_children():
 		child.queue_free()
 	for i in range(cards.size()):
@@ -49,6 +50,8 @@ func _control_refresh_helper(control : Control, cards : Array[Card], clickable :
 		if !clickable:
 			card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card_visual.card_data = cards[i]
+		if face_down:
+			card_visual.face_down = true
 		card_visual.position = _slot_position(i, cards.size(), control)
 		if card_visual.card_data in selected_cards:
 			card_visual.set_selected(true)
@@ -78,8 +81,9 @@ func _on_sort_button_pressed() -> void:
 	_refresh()
 
 func _draw_areas() -> void :
-	_control_refresh_helper(hand_area, stage_state.hand, true)
-	_control_refresh_helper(table_area, stage_state.get_set_in_play(), false)
+	_control_refresh_helper(hand_area, stage_state.hand, true, false)
+	_control_refresh_helper(table_area, stage_state.get_set_in_play(), false, false)
+	_control_refresh_helper(house_area, stage_state.house_hand, false, true)
 
 func _update_labels() -> void :
 	stage_target.text = "%d / %d" % [stage_state.stage_score, stage_state.target_score]
@@ -90,7 +94,12 @@ func _update_labels() -> void :
 		last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
 	else:
 		last_reason.text = ""
-	message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
+	if stage_state.game_state != StageState.GameState.PLAYING:
+		message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
+	elif stage_state.get_set_in_play().is_empty():
+		message_label.text = "YOU OPEN — play anything"
+	else:
+		message_label.text = ""
 
 
 func _update_visibility() -> void :
@@ -104,7 +113,9 @@ func _update_visibility() -> void :
 	steals_left.visible = playing
 	ladders_left.visible = playing
 	last_reason.visible = playing
-	message_label.visible = not playing
+	message_label.visible = true   # empty string shows nothing while playing
+	if stage_state.get_set_in_play().is_empty():
+		message_label.visible = true
 
 
 # ---- Drag / drop ----
