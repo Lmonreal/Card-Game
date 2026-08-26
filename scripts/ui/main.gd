@@ -176,4 +176,8 @@ func _draw_table_pile():
 			card_visual.card_data = play.cards[i]
 			var card_pitch : float = 39 * card_visual.card_scale * 0.20
 			card_visual.position = Vector2(i * card_pitch, (step) * j)
+			card_visual.material.set_shader_parameter("x_rot", 10.0)
+			card_visual.material.set_shader_parameter("fov", 60.0)
+			card_visual.material.set_shader_parameter("inset", 0.5)
+			card_visual.card_scale = 6
 			table_area.add_child(card_visual)
