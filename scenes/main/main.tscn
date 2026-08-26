@@ -7,6 +7,12 @@
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
 [ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
 
+[sub_resource type="Gradient" id="Gradient_ow5a4"]
+colors = PackedColorArray(0.93997896, 0.74612725, 0.303404, 1, 1, 1, 0.753506, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ow5a4"]
+gradient = SubResource("Gradient_ow5a4")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c7e0"]
 shader = ExtResource("2_k2fmo")
 shader_parameter/pixelated = true
@@ -22,6 +28,7 @@ shader_parameter/scanline_color = Color(1, 1, 1, 0)
 shader_parameter/scanline_size = 1.0
 shader_parameter/scanline_speed = 0.0
 shader_parameter/gradient_amount = 0.0
+shader_parameter/gradient = SubResource("GradientTexture1D_ow5a4")
 shader_parameter/gradient_speed = 0.13999999687072
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6q06x"]
@@ -64,14 +71,14 @@ grow_vertical = 0
 
 [node name="TableArea" type="Control" parent="." unique_id=1042919141]
 layout_mode = 1
-anchor_left = 0.45
-anchor_top = 0.28100002
-anchor_right = 0.6
-anchor_bottom = 0.51900005
-offset_left = -0.8000488
-offset_top = 0.519989
-offset_right = 0.79992676
-offset_bottom = -0.52008057
+anchor_left = 0.42400002
+anchor_top = 0.177
+anchor_right = 0.57500005
+anchor_bottom = 0.41400003
+offset_left = 0.9199219
+offset_top = -0.16000366
+offset_right = 0.5998535
+offset_bottom = -0.120025635
 grow_horizontal = 2
 grow_vertical = 2
 

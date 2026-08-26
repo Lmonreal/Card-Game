@@ -82,7 +82,7 @@ func _on_sort_button_pressed() -> void:
 
 func _draw_areas() -> void :
 	_control_refresh_helper(hand_area, stage_state.hand, true, false)
-	_control_refresh_helper(table_area, stage_state.get_set_in_play(), false, false)
+	_draw_table_pile()
 	_control_refresh_helper(house_area, stage_state.house_hand, false, true)
 
 func _update_labels() -> void :
@@ -114,8 +114,6 @@ func _update_visibility() -> void :
 	ladders_left.visible = playing
 	last_reason.visible = playing
 	message_label.visible = true   # empty string shows nothing while playing
-	if stage_state.get_set_in_play().is_empty():
-		message_label.visible = true
 
 
 # ---- Drag / drop ----
@@ -165,3 +163,17 @@ func _on_card_clicked(card : Card, selected : bool) -> void:
 		selected_cards.append(card)
 	else:
 		selected_cards.erase(card)
+
+func _draw_table_pile():
+	for child in table_area.get_children():
+		child.queue_free()
+	var step : int = 32
+	for j in range(stage_state.ladder.size()):
+		var play : Play = stage_state.ladder[j]
+		for i in range(play.cards.size()):
+			var card_visual = CARD_VISUAL.instantiate()
+			card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			card_visual.card_data = play.cards[i]
+			var card_pitch : float = 39 * card_visual.card_scale * 0.20
+			card_visual.position = Vector2(i * card_pitch, (step) * j)
+			table_area.add_child(card_visual)
