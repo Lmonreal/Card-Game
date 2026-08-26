@@ -1,8 +1,19 @@
 [gd_scene format=3 uid="uid://df2nkijcrwyi1"]
 
+[ext_resource type="Shader" uid="uid://dgxap8mmv4atv" path="res://assets/shaders/card_tilt.gdshader" id="1_unu3v"]
 [ext_resource type="Script" uid="uid://dd8cvntwh0nrs" path="res://scripts/ui/card_visual.gd" id="1_w61x7"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gw2cc"]
+resource_local_to_scene = true
+shader = ExtResource("1_unu3v")
+shader_parameter/fov = 1.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
+
 [node name="CardVisual" type="TextureRect" unique_id=998101211]
+material = SubResource("ShaderMaterial_gw2cc")
 offset_right = 40.0
 offset_bottom = 40.0
 expand_mode = 1
