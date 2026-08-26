@@ -17,6 +17,7 @@ var target_score : int = 300
 var last_reason : Reason = Reason.OK
 var game_state : GameState
 var last_ladder_score : int
+var next_opener : Play.Who = Play.Who.HOUSE
 # Enums and Constants
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}
 enum Response {ANSWERED, PASSED}
@@ -83,6 +84,7 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 	else:
 		last_ladder_score = calc_ladder_score(true)
 		stage_score += last_ladder_score
+		next_opener = Play.Who.PLAYER
 		_end_ladder()
 		return TurnResult.CAPPED
 
@@ -113,6 +115,7 @@ func fold(is_stealing : bool) -> void:
 		steals_left -= 1
 	else:
 		last_ladder_score = 0
+	next_opener = Play.Who.HOUSE
 	_end_ladder()
 
 
@@ -127,7 +130,7 @@ func _end_ladder():
 		stage_won()
 	elif ladders_left <= 0:
 		game_over()
-	else:
+	elif next_opener == Play.Who.HOUSE:
 		open_ladder()
 
 
