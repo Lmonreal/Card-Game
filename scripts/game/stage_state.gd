@@ -87,7 +87,6 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 		last_receipt = build_receipt(true)
 		stage_score += last_ladder_score
 		next_opener = Play.Who.PLAYER
-		_end_ladder()
 		return TurnResult.CAPPED
 
 
@@ -115,7 +114,6 @@ func fold(is_stealing : bool) -> void:
 	else:
 		last_ladder_score = 0
 	next_opener = Play.Who.HOUSE
-	_end_ladder()
 
 
 func _end_ladder():
@@ -214,3 +212,6 @@ func build_receipt(include_house_claim : bool) -> Array[ScoreStep]:
 				score_step.mult = card.mult
 			receipt.append(score_step)
 	return receipt
+
+func finish_ladder() -> void:
+	_end_ladder()

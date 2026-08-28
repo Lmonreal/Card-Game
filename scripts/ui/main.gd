@@ -31,6 +31,8 @@ func _on_play_button_pressed() -> void:
 	var selected_hand : Array[Card] = _get_selected().duplicate()
 	last_turn_result = stage_state.play_selected(selected_hand)
 	selected_cards.clear()
+	if last_turn_result == StageState.TurnResult.CAPPED:
+		stage_state.finish_ladder()
 	_refresh()
 
 func _refresh() -> void:
@@ -62,11 +64,13 @@ func _slot_position(index : int, card_count : int, area : Control) -> Vector2:
 
 func _on_steal_button_pressed() -> void:
 	stage_state.fold(true)
+	stage_state.finish_ladder()
 	selected_cards.clear()
 	_refresh()
 
 func _on_fold_button_pressed() -> void:
 	stage_state.fold(false)
+	stage_state.finish_ladder()
 	selected_cards.clear()
 	_refresh()
 
