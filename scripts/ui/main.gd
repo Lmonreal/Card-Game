@@ -19,7 +19,7 @@ var stage_state : StageState = StageState.new()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 var selected_cards : Array[Card] = []
 var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
-
+var animating : bool = false
 
 func _ready() -> void:
 	_refresh()
@@ -28,10 +28,16 @@ func _get_selected() -> Array[Card]:
 	return selected_cards
 
 func _on_play_button_pressed() -> void:
+	if animating:
+		return
 	var selected_hand : Array[Card] = _get_selected().duplicate()
 	last_turn_result = stage_state.play_selected(selected_hand)
 	selected_cards.clear()
 	if last_turn_result == StageState.TurnResult.CAPPED:
+		_refresh()
+		animating = true
+		await get_tree().create_timer(0.5).timeout
+		animating = false
 		stage_state.finish_ladder()
 	_refresh()
 
@@ -63,24 +69,32 @@ func _slot_position(index : int, card_count : int, area : Control) -> Vector2:
 	return Vector2(index * (area.size.x / card_count), 0)
 
 func _on_steal_button_pressed() -> void:
+	if animating:
+		return
 	stage_state.fold(true)
 	stage_state.finish_ladder()
 	selected_cards.clear()
 	_refresh()
 
 func _on_fold_button_pressed() -> void:
+	if animating:
+		return
 	stage_state.fold(false)
 	stage_state.finish_ladder()
 	selected_cards.clear()
 	_refresh()
 
 func _on_reset_button_pressed() -> void:
+	if animating:
+		return
 	stage_state = StageState.new()
 	last_turn_result = StageState.TurnResult.CONTINUES
 	selected_cards.clear()
 	_refresh()
 
 func _on_sort_button_pressed() -> void:
+	if animating:
+		return
 	stage_state.sort_hand(stage_state.hand)
 	_refresh()
 
