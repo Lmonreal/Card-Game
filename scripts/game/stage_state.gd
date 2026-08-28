@@ -17,6 +17,7 @@ var target_score : int = 300
 var last_reason : Reason = Reason.OK
 var game_state : GameState
 var last_ladder_score : int
+var last_receipt : Array[ScoreStep]
 var next_opener : Play.Who = Play.Who.HOUSE
 # Enums and Constants
 enum Reason {OK, MIXED_RANKS, TOO_LOW, WRONG_COUNT, EMPTY}
@@ -83,6 +84,7 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 		return TurnResult.CONTINUES
 	else:
 		last_ladder_score = calc_ladder_score(true)
+		last_receipt = build_receipt(true)
 		stage_score += last_ladder_score
 		next_opener = Play.Who.PLAYER
 		_end_ladder()
@@ -92,15 +94,11 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 func calc_ladder_score(include_house_claim : bool) -> int:
 	var scored_chips : int = 0
 	var scored_mult : int = 0
-	for play in ladder:
-		if play.who == Play.Who.HOUSE and include_house_claim:
-			for card in play.cards:
-				scored_chips += card.chips
+	var receipt : Array[ScoreStep] = build_receipt(include_house_claim)
+	for score_step in receipt:
+		scored_chips += score_step.chips
+		scored_mult += score_step.mult
 	
-		if play.who == Play.Who.PLAYER:
-			for card in play.cards:
-				scored_chips += card.chips
-				scored_mult += 1
 	var ladder_score : int = scored_chips * scored_mult
 	if hand.is_empty():
 		ladder_score = ladder_score * 2
@@ -110,6 +108,7 @@ func calc_ladder_score(include_house_claim : bool) -> int:
 func fold(is_stealing : bool) -> void:
 	if is_stealing and steals_left > 0:
 		last_ladder_score = calc_ladder_score(false)
+		last_receipt = build_receipt(false)
 		hand.append_array(get_set_in_play())
 		stage_score += last_ladder_score
 		steals_left -= 1
@@ -121,6 +120,7 @@ func fold(is_stealing : bool) -> void:
 
 func _end_ladder():
 	ladder.clear()
+	last_receipt.clear()
 	ladders_left -= 1
 	refill_hand(hand, deck)
 	refill_hand(house_hand, house_deck)
@@ -199,3 +199,18 @@ func _lowest_full_set(all_sets : Array[Array]) -> Array[Card] :
 		else:
 			break
 	return candidate
+
+func build_receipt(include_house_claim : bool) -> Array[ScoreStep]:
+	var receipt : Array[ScoreStep] = []
+	for play in ladder:
+		if play.who == Play.Who.HOUSE and !include_house_claim:
+			#burn()
+			continue
+		for card in play.cards:
+			var score_step = ScoreStep.new()
+			score_step.card = card
+			score_step.chips = card.chips
+			if play.who == Play.Who.PLAYER:
+				score_step.mult = card.mult
+			receipt.append(score_step)
+	return receipt
