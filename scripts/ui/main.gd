@@ -36,7 +36,7 @@ func _on_play_button_pressed() -> void:
 	if last_turn_result == StageState.TurnResult.CAPPED:
 		_refresh()
 		animating = true
-		await get_tree().create_timer(0.5).timeout
+		await _animate_ladder_score()
 		animating = false
 		stage_state.finish_ladder()
 	_refresh()
@@ -195,3 +195,19 @@ func _draw_table_pile():
 			var card_pitch : float = 39 * card_visual.card_scale * 0.20
 			card_visual.position = Vector2(i * card_pitch, (step) * j)
 			table_area.add_child(card_visual)
+
+func _animate_ladder_score() -> void:
+	var reverse_receipt = stage_state.last_receipt.duplicate()
+	reverse_receipt.reverse()
+	for step in reverse_receipt:
+		print(step.card.name + " + " + str(step.chips))
+		await get_tree().create_timer(0.15).timeout
+		var visual := _find_table_visual(step.card)
+		if visual:
+			visual.queue_free()
+
+func _find_table_visual(card : Card) -> Control:
+	for child in table_area.get_children():
+		if child.card_data == card:
+			return child
+	return null
