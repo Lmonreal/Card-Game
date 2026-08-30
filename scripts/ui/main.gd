@@ -21,7 +21,8 @@ var selected_cards : Array[Card] = []
 var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
 var score_beat : float = 0.40    # pause between count-up steps
-var score_hold : float = 0.4     # pause before/after the final total reveal
+var score_hold : float = 0.8     # pause before/after the final total reveal
+enum EndKind {CAP, STEAL, COLLAPSE}
 
 func _ready() -> void:
 	_refresh()
@@ -36,11 +37,7 @@ func _on_play_button_pressed() -> void:
 	last_turn_result = stage_state.play_selected(selected_hand)
 	selected_cards.clear()
 	if last_turn_result == StageState.TurnResult.CAPPED:
-		_refresh()
-		animating = true
-		await _animate_ladder_score()
-		animating = false
-		stage_state.finish_ladder()
+		await _end_ladder_sequence(EndKind.CAP)
 	_refresh()
 
 func _refresh() -> void:
@@ -73,17 +70,22 @@ func _slot_position(index : int, card_count : int, area : Control) -> Vector2:
 func _on_steal_button_pressed() -> void:
 	if animating:
 		return
+	var steals_before : int = stage_state.steals_left
 	stage_state.fold(true)
-	stage_state.finish_ladder()
 	selected_cards.clear()
+	if stage_state.steals_left < steals_before:
+		await _end_ladder_sequence(EndKind.STEAL)
+	else:
+		# Out of steals — the brain collapsed; don't play steal drama over it.
+		await _end_ladder_sequence(EndKind.COLLAPSE)
 	_refresh()
 
 func _on_fold_button_pressed() -> void:
 	if animating:
 		return
 	stage_state.fold(false)
-	stage_state.finish_ladder()
 	selected_cards.clear()
+	await _end_ladder_sequence(EndKind.COLLAPSE)
 	_refresh()
 
 func _on_reset_button_pressed() -> void:
@@ -257,3 +259,23 @@ func _animate_card_score(visual : TextureRect) -> void :
 	t.tween_property(visual, "rotation_degrees", 10, 0.06).set_trans(Tween.TRANS_CUBIC)
 	t.tween_property(visual, "scale", Vector2.ONE, 0.06).set_ease(Tween.EASE_OUT)
 	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_ease(Tween.EASE_OUT)
+
+func _animate_steal():
+	await get_tree().create_timer(0.3).timeout
+
+func _animate_collapse():
+	await get_tree().create_timer(0.3).timeout
+
+func _end_ladder_sequence(kind : EndKind):
+	_refresh()
+	animating = true
+	match kind:
+		EndKind.CAP:
+			await _animate_ladder_score()
+		EndKind.STEAL:
+			await _animate_steal()
+		EndKind.COLLAPSE:
+			await _animate_collapse()
+	animating = false
+	stage_state.finish_ladder()
+	_refresh()

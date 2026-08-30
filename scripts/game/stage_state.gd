@@ -113,6 +113,7 @@ func fold(is_stealing : bool) -> void:
 		steals_left -= 1
 	else:
 		last_ladder_score = 0
+		last_receipt.clear()
 	next_opener = Play.Who.HOUSE
 
 
