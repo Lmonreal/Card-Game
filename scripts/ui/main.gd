@@ -20,7 +20,7 @@ var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 var selected_cards : Array[Card] = []
 var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
-var score_beat : float = 0.60    # pause between count-up steps
+var score_beat : float = 0.50    # pause between count-up steps
 var score_hold : float = 0.4     # pause before/after the final total reveal
 var displayed_score : int
 enum EndKind {CAP, STEAL, COLLAPSE}
@@ -242,7 +242,7 @@ func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = 
 	fl.add_theme_font_size_override("font_size", 36)
 	fl.add_theme_color_override("font_color", text_color)
 	fl.add_theme_color_override("font_outline_color", Color.BLACK)
-	fl.add_theme_constant_override("outline_size", 8)
+	fl.add_theme_constant_override("outline_size", 16)
 	fl.position = at + Vector2(20, -10)
 	table_area.add_child(fl)
 	var t := create_tween().set_parallel(true)
@@ -259,11 +259,11 @@ func _find_table_visual(card : Card) -> Control:
 	return null
 
 func _animate_card_score(visual : TextureRect) -> void :
-	var t := create_tween()
-	t.tween_property(visual, "scale", Vector2(1.40, 1.40), 0.1).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(visual, "rotation_degrees", 15, 0.06).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(visual, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_ease(Tween.EASE_OUT)
+	var t := create_tween().parallel()
+	t.tween_property(visual, "scale", Vector2(1.60, 1.60), 0.05).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(visual, "rotation_degrees", 10, 0.06).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(visual, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 func _animate_steal():
 	var back : Play = stage_state.ladder.back()

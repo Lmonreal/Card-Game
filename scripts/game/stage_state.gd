@@ -8,7 +8,7 @@ var hand : Array[Card]
 var house_deck : Array[Card]
 var house_hand : Array[Card]
 # Game State
-var steals_left : int = 3
+var steals_left : int = 2
 var ladders_left : int = 4
 var ladder : Array[Play]
 var hand_size : int = 8

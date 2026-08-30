@@ -1,4 +1,4 @@
-# v0 Playtest Log
+ v0 Playtest Log
 
 Settings at start: steals 3 · ladders 4 · target 300 · ceiling 13 · opener count cap 2 · climb cap 2
 
@@ -36,4 +36,3 @@ Settings at start: steals 3 · ladders 4 · target 300 · ceiling 13 · opener c
 Yes! Folding lets you draw new cards instead of possibly grabbing worse cards from the table
 * The one change that mattered most: I don't think im gonna do the knob turning just yet.
 * What v1 needs first: I feel like not being able to start a ladder myself was kind of annoying considering I had 4 ks in my hand at some point. Or 5 3s. Also, SORTING MY HAND. It's not terrible but I want to be able to get an idea at a glance.
-
