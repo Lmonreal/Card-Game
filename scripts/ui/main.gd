@@ -263,22 +263,32 @@ func _animate_card_score(visual : TextureRect) -> void :
 	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_ease(Tween.EASE_OUT)
 
 func _animate_steal():
+	var back : Play = stage_state.ladder.back()
 	for play in stage_state.ladder:
-		if play.who == Play.Who.HOUSE:
+		if play != back:
+			if play.who == Play.Who.HOUSE:
+				for card in play.cards:
+					var visual = _find_table_visual(card)
+					if visual:
+						var tween : Tween = create_tween()
+						tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3).set_trans(Tween.TRANS_CUBIC)
+		else:
 			for card in play.cards:
 				var visual = _find_table_visual(card)
-				var tween : Tween = create_tween()
-				tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
-	await get_tree().create_timer(0.5).timeout
+				if visual:
+					visual.queue_free()
+			await get_tree().create_timer(score_beat).timeout
+	await get_tree().create_timer(score_beat).timeout
 	await _animate_ladder_score()
 
 func _animate_collapse():
 	for play in stage_state.ladder:
 		for card in play.cards:
 			var visual = _find_table_visual(card)
-			var tween : Tween = create_tween()
-			tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
-	await get_tree().create_timer(0.5).timeout
+			if visual:
+				var tween : Tween = create_tween()
+				tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
+	await get_tree().create_timer(0.2).timeout
 
 func _end_ladder_sequence(kind : EndKind):
 	_refresh()
