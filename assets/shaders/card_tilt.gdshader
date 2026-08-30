@@ -9,8 +9,10 @@ uniform float inset : hint_range(0, 1) = 0.0;
 
 varying flat vec2 o;
 varying vec3 p;
+varying flat vec4 v_modulate;   // node's modulate arrives as vertex COLOR
 
 void vertex() {
+    v_modulate = COLOR;
     // Limitar los valores dentro del shader por seguridad
     float limited_y_rot = clamp(y_rot, -30.0, 30.0);
     float limited_x_rot = clamp(x_rot, -30.0, 30.0);
@@ -45,6 +47,6 @@ void vertex() {
 void fragment() {
     if (cull_back && p.z <= 0.0) discard;
     vec2 uv = (p.xy / p.z).xy - o;
-    COLOR = texture(TEXTURE, uv + 0.5);
+    COLOR = texture(TEXTURE, uv + 0.5) * v_modulate;
     COLOR.a *= step(max(abs(uv.x), abs(uv.y)), 0.5);
 }

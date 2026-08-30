@@ -20,8 +20,8 @@ var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 var selected_cards : Array[Card] = []
 var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
-var score_beat : float = 0.40    # pause between count-up steps
-var score_hold : float = 0.8     # pause before/after the final total reveal
+var score_beat : float = 0.60    # pause between count-up steps
+var score_hold : float = 0.4     # pause before/after the final total reveal
 enum EndKind {CAP, STEAL, COLLAPSE}
 
 func _ready() -> void:
@@ -249,22 +249,36 @@ func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = 
 
 func _find_table_visual(card : Card) -> Control:
 	for child in table_area.get_children():
+		if child.is_queued_for_deletion():
+			continue
 		if child.card_data == card:
 			return child
 	return null
 
 func _animate_card_score(visual : TextureRect) -> void :
 	var t := create_tween()
-	t.tween_property(visual, "scale", Vector2(1.30, 1.30), 0.03).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(visual, "rotation_degrees", 10, 0.06).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(visual, "scale", Vector2.ONE, 0.06).set_ease(Tween.EASE_OUT)
+	t.tween_property(visual, "scale", Vector2(1.40, 1.40), 0.1).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(visual, "rotation_degrees", 15, 0.06).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(visual, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_ease(Tween.EASE_OUT)
 
 func _animate_steal():
-	await get_tree().create_timer(0.3).timeout
+	for play in stage_state.ladder:
+		if play.who == Play.Who.HOUSE:
+			for card in play.cards:
+				var visual = _find_table_visual(card)
+				var tween : Tween = create_tween()
+				tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
+	await get_tree().create_timer(0.5).timeout
+	await _animate_ladder_score()
 
 func _animate_collapse():
-	await get_tree().create_timer(0.3).timeout
+	for play in stage_state.ladder:
+		for card in play.cards:
+			var visual = _find_table_visual(card)
+			var tween : Tween = create_tween()
+			tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
+	await get_tree().create_timer(0.5).timeout
 
 func _end_ladder_sequence(kind : EndKind):
 	_refresh()
