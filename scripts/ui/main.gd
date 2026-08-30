@@ -211,7 +211,7 @@ func _animate_ladder_score() -> void:
 			_animate_card_score(visual)
 			_spawn_float_label("+%d" % step.chips, visual.position, Color(0.5, 0.8, 1.0))
 			chips_total += step.chips
-			last_score.text = "%dc × %dm" % [chips_total, mult_total]
+			last_score.text = "%d × %d" % [chips_total, mult_total]
 			await get_tree().create_timer(score_beat).timeout
 			# Beat 2: mult, only if this card gives any. Future add-ons = more beats here.
 			if step.mult > 0:

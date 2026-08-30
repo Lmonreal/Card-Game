@@ -169,19 +169,21 @@ text = "TEST"
 [node name="LastScore" type="Label" parent="." unique_id=40506875]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.002
-anchor_top = 0.054
-anchor_right = 0.032
+anchor_left = 0.455
+anchor_top = 0.029000001
+anchor_right = 0.544
 anchor_bottom = 0.081
-offset_left = -0.84000015
-offset_top = -0.3199997
-offset_right = -0.44000244
-offset_bottom = 0.51999664
+offset_left = 0.39996338
+offset_top = -0.3200016
+offset_right = -0.32019043
+offset_bottom = 3.5199966
 theme = ExtResource("5_ow5a4")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 36
 text = "+test"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="StealsLeft" type="Label" parent="." unique_id=963131870]
 layout_mode = 1
@@ -242,6 +244,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=95099679]
+visible = false
 z_index = 10
 material = SubResource("ShaderMaterial_6q06x")
 layout_mode = 1
