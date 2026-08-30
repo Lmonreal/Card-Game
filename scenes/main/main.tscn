@@ -7,6 +7,11 @@
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
 [ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
 
+[sub_resource type="Gradient" id="Gradient_ow5a4"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ow5a4"]
+gradient = SubResource("Gradient_ow5a4")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c7e0"]
 shader = ExtResource("2_k2fmo")
 shader_parameter/pixelated = true
@@ -22,6 +27,7 @@ shader_parameter/scanline_color = Color(1, 1, 1, 0)
 shader_parameter/scanline_size = 1.0
 shader_parameter/scanline_speed = 0.0
 shader_parameter/gradient_amount = 0.0
+shader_parameter/gradient = SubResource("GradientTexture1D_ow5a4")
 shader_parameter/gradient_speed = 0.13999999687072
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6q06x"]
@@ -41,7 +47,7 @@ grow_vertical = 2
 script = ExtResource("1_hyk8p")
 
 [node name="Background" type="TextureRect" parent="." unique_id=569092931]
-modulate = Color(1, 1, 1, 0.84300005)
+modulate = Color(1, 1, 1, 0.84313726)
 material = SubResource("ShaderMaterial_6c7e0")
 layout_mode = 1
 anchors_preset = 15

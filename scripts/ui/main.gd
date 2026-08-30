@@ -22,6 +22,7 @@ var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
 var score_beat : float = 0.60    # pause between count-up steps
 var score_hold : float = 0.4     # pause before/after the final total reveal
+var displayed_score : int
 enum EndKind {CAP, STEAL, COLLAPSE}
 
 func _ready() -> void:
@@ -92,6 +93,7 @@ func _on_reset_button_pressed() -> void:
 	if animating:
 		return
 	stage_state = StageState.new()
+	displayed_score = 0
 	last_turn_result = StageState.TurnResult.CONTINUES
 	selected_cards.clear()
 	_refresh()
@@ -108,7 +110,7 @@ func _draw_areas() -> void :
 	_control_refresh_helper(house_area, stage_state.house_hand, false, true)
 
 func _update_labels() -> void :
-	stage_target.text = "%d / %d" % [stage_state.stage_score, stage_state.target_score]
+	stage_target.text = "%d / %d" % [displayed_score, stage_state.target_score]
 	steals_left.text = str(stage_state.steals_left) + " steals left"
 	ladders_left.text = str(stage_state.ladders_left) + " ladders left"
 	last_score.text = "+" + str(stage_state.last_ladder_score)
@@ -230,6 +232,7 @@ func _animate_ladder_score() -> void:
 		last_score.text = "%d × %d ×2 = +%d" % [chips_total, mult_total, stage_state.last_ladder_score]
 	else:
 		last_score.text = "%d × %d = +%d" % [chips_total, mult_total, stage_state.last_ladder_score]
+	displayed_score = stage_state.stage_score
 	await get_tree().create_timer(score_hold).timeout
 
 func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = Color.WHITE) -> void:
@@ -278,7 +281,7 @@ func _animate_steal():
 				if visual:
 					visual.queue_free()
 			await get_tree().create_timer(score_beat).timeout
-	await get_tree().create_timer(score_beat).timeout
+	await get_tree().create_timer(0.2).timeout
 	await _animate_ladder_score()
 
 func _animate_collapse():
