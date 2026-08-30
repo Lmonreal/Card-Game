@@ -20,6 +20,8 @@ var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 var selected_cards : Array[Card] = []
 var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
+var score_beat : float = 0.40    # pause between count-up steps
+var score_hold : float = 0.4     # pause before/after the final total reveal
 
 func _ready() -> void:
 	_refresh()
@@ -199,15 +201,59 @@ func _draw_table_pile():
 func _animate_ladder_score() -> void:
 	var reverse_receipt = stage_state.last_receipt.duplicate()
 	reverse_receipt.reverse()
+	var chips_total : int = 0
+	var mult_total : int = 0
 	for step in reverse_receipt:
-		print(step.card.name + " + " + str(step.chips))
-		await get_tree().create_timer(0.15).timeout
 		var visual := _find_table_visual(step.card)
 		if visual:
+			visual.pivot_offset = visual.size / 2
+			# Beat 1: chips. Every card has these.
+			_animate_card_score(visual)
+			_spawn_float_label("+%d" % step.chips, visual.position, Color(0.5, 0.8, 1.0))
+			chips_total += step.chips
+			last_score.text = "%dc × %dm" % [chips_total, mult_total]
+			await get_tree().create_timer(score_beat).timeout
+			# Beat 2: mult, only if this card gives any. Future add-ons = more beats here.
+			if step.mult > 0:
+				_animate_card_score(visual)
+				_spawn_float_label("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
+				mult_total += step.mult
+				last_score.text = "%d × %d" % [chips_total, mult_total]
+				await get_tree().create_timer(score_beat).timeout
 			visual.queue_free()
+	# Finale: hold, then reveal the product (Going Out shows as more than the product).
+	await get_tree().create_timer(score_hold).timeout
+	var product : int = chips_total * mult_total
+	if stage_state.last_ladder_score > product:
+		last_score.text = "%d × %d ×2 = +%d" % [chips_total, mult_total, stage_state.last_ladder_score]
+	else:
+		last_score.text = "%d × %d = +%d" % [chips_total, mult_total, stage_state.last_ladder_score]
+	await get_tree().create_timer(score_hold).timeout
+
+func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = Color.WHITE) -> void:
+	var fl := Label.new()
+	fl.text = label_text
+	fl.add_theme_font_override("font", load("res://assets/fonts/Logic_Loop.ttf"))
+	fl.add_theme_font_size_override("font_size", 36)
+	fl.add_theme_color_override("font_color", text_color)
+	fl.add_theme_color_override("font_outline_color", Color.BLACK)
+	fl.add_theme_constant_override("outline_size", 8)
+	fl.position = at + Vector2(20, -10)
+	table_area.add_child(fl)
+	var t := create_tween().set_parallel(true)
+	t.tween_property(fl, "position:y", fl.position.y - 40, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(fl, "modulate:a", 0.0, 0.4)
+	t.chain().tween_callback(fl.queue_free)
 
 func _find_table_visual(card : Card) -> Control:
 	for child in table_area.get_children():
 		if child.card_data == card:
 			return child
 	return null
+
+func _animate_card_score(visual : TextureRect) -> void :
+	var t := create_tween()
+	t.tween_property(visual, "scale", Vector2(1.30, 1.30), 0.03).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(visual, "rotation_degrees", 10, 0.06).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(visual, "scale", Vector2.ONE, 0.06).set_ease(Tween.EASE_OUT)
+	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_ease(Tween.EASE_OUT)
