@@ -13,6 +13,9 @@ config_version=5
 config/name="Card Game"
 run/main_scene="uid://be7k5ypbb0km0"
 config/features=PackedStringArray("4.7", "Forward Plus")
+boot_splash/bg_color=Color(0.6255971, 0.6255971, 0.62559694, 1)
+boot_splash/stretch_mode=0
+boot_splash/image="uid://b7x3l0rmddklq"
 
 [autoload]
 
