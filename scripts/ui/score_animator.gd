@@ -1,4 +1,5 @@
 extends Node
+class_name ScoreAnimator
 ## ScoreAnimator — the count-up, the burn, the fade. Behavior with no visuals of
 ## its own, so it's a plain Node (it needs the tree for tweens and timers).
 ## It receives everything as arguments; it never reads game state.
@@ -6,12 +7,12 @@ extends Node
 var score_beat : float = 0.50    # pause between count-up steps
 var score_hold : float = 0.4     # pause before/after the final total reveal
 
-var _table : Control   # TableView: find_visual() + parent for float labels
-var _hud : Control     # Hud: set_tally() / sync_score()
+var _table : TableView  # TableView: find_visual() + parent for float labels
+var _hud : Hud          # Hud: set_tally() / sync_score()
 
 
 ## Called once by the coordinator in _ready.
-func setup(table_view : Control, hud : Control) -> void:
+func setup(table_view : TableView, hud : Hud) -> void:
 	_table = table_view
 	_hud = hud
 

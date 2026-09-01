@@ -1,4 +1,5 @@
 extends Control
+class_name ActionBar
 ## ActionBar — the player's buttons. Knows nothing about the game.
 ## Buttons connect to the _on_* methods inside action_bar.tscn; those re-emit
 ## as named signals so the coordinator can subscribe without touching nodes.

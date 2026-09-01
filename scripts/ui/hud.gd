@@ -1,4 +1,5 @@
 extends Control
+class_name Hud
 ## Hud — the stat readouts. Draws whatever the coordinator hands it.
 ## It never reads game state itself: refresh() receives plain values.
 

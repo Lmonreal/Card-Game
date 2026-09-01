@@ -1,4 +1,5 @@
 extends Control
+class_name TableView
 ## TableView — draws the ladder as a pile. Pure display: no signals, no game state.
 ## The animator finds card visuals through find_visual() and parents float labels here.
 

@@ -1,6 +1,6 @@
 # v0.2 Refactor Plan — from one big scene to components
 
-Status: APPROVED 2026-08-31 (Lorenzo). Execution starts after the Discrete midterm (2026-09-09); step 0 first.
+Status: EXECUTED 2026-09-01 — steps 1–6 + class_name pass done, each acceptance-tested. Step 0 remainder (fold → redraw, no-score steals) still pending in the brain; Going Out already deleted. HouseView (step 7) is the next build.
 
 ## 0. Why now
 

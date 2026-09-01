@@ -5,11 +5,11 @@ extends Control
 signal stage_finished(won : bool, score : int)
 
 const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
-@onready var hand_view: Control = %HandView
-@onready var table_view: Control = %TableView
-@onready var action_bar: Control = %ActionBar
-@onready var hud: Control = %Hud
-@onready var score_animator: Node = %ScoreAnimator
+@onready var hand_view: HandView = %HandView
+@onready var table_view: TableView = %TableView
+@onready var action_bar: ActionBar = %ActionBar
+@onready var hud: Hud = %Hud
+@onready var score_animator: ScoreAnimator = %ScoreAnimator
 @onready var house_area: Control = $HouseArea
 
 var stage_state : StageState = _new_stage()

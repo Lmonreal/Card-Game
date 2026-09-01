@@ -1,4 +1,5 @@
 extends Control
+class_name HandView
 ## HandView — the player's cards. Owns selection, drag-to-reorder and the live shift.
 ## Holds a COPY of the cards it was last shown; never touches game state.
 ## Signals up: reorder_requested(from, to). Calls down: show_hand / get_selected / clear_selection.
