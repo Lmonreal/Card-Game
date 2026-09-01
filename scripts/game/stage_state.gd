@@ -98,10 +98,7 @@ func calc_ladder_score(include_house_claim : bool) -> int:
 		scored_chips += score_step.chips
 		scored_mult += score_step.mult
 	
-	var ladder_score : int = scored_chips * scored_mult
-	if hand.is_empty():
-		ladder_score = ladder_score * 2
-	return ladder_score
+	return scored_chips * scored_mult
 
 
 func fold(is_stealing : bool) -> void:

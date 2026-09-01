@@ -39,7 +39,7 @@ might not be able to answer at all. An unanswered open scores immediately.
 
 - Number cards = face value in chips. J/Q/K = 10. Ace = 11 (and the highest rank).
 - Ladder score = (all chips on the table) × (cards you played).
-- Long rallies with pairs/triples score big. Emptying your whole hand doubles the ladder.
+- Long rallies with pairs/triples score big.
 
 ## Controls
 

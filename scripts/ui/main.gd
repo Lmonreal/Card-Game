@@ -5,6 +5,7 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var table_view: Control = %TableView
 @onready var action_bar: Control = %ActionBar
 @onready var hud: Control = %Hud
+@onready var score_animator: Node = %ScoreAnimator
 @onready var house_area: Control = $HouseArea
 
 var stage_state : StageState = StageState.new()
@@ -12,8 +13,6 @@ var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 var selected_cards : Array[Card] = []
 var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
-var score_beat : float = 0.50    # pause between count-up steps
-var score_hold : float = 0.4     # pause before/after the final total reveal
 enum EndKind {CAP, STEAL, COLLAPSE}
 
 func _ready() -> void:
@@ -23,6 +22,7 @@ func _ready() -> void:
 	action_bar.fold_pressed.connect(_on_fold_button_pressed)
 	action_bar.sort_pressed.connect(_on_sort_button_pressed)
 	action_bar.reset_pressed.connect(_on_reset_button_pressed)
+	score_animator.setup(table_view, hud)
 	_refresh()
 	
 func _get_selected() -> Array[Card]:
@@ -171,99 +171,20 @@ func _on_card_clicked(card : Card, selected : bool) -> void:
 	else:
 		selected_cards.erase(card)
 
-func _animate_ladder_score() -> void:
-	var reverse_receipt = stage_state.last_receipt.duplicate()
-	reverse_receipt.reverse()
-	var chips_total : int = 0
-	var mult_total : int = 0
-	for step in reverse_receipt:
-		var visual : Control = table_view.find_visual(step.card)
-		if visual:
-			visual.pivot_offset = visual.size / 2
-			# Beat 1: chips. Every card has these.
-			_animate_card_score(visual)
-			_spawn_float_label("+%d" % step.chips, visual.position, Color(0.5, 0.8, 1.0))
-			chips_total += step.chips
-			hud.set_tally("%d × %d" % [chips_total, mult_total])
-			await get_tree().create_timer(score_beat).timeout
-			# Beat 2: mult, only if this card gives any. Future add-ons = more beats here.
-			if step.mult > 0:
-				_animate_card_score(visual)
-				_spawn_float_label("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
-				mult_total += step.mult
-				hud.set_tally("%d × %d" % [chips_total, mult_total])
-				await get_tree().create_timer(score_beat).timeout
-			visual.queue_free()
-	# Finale: hold, then reveal the product (Going Out shows as more than the product).
-	await get_tree().create_timer(score_hold).timeout
-	var product : int = chips_total * mult_total
-	if stage_state.last_ladder_score > product:
-		hud.set_tally("%d × %d ×2 = +%d" % [chips_total, mult_total, stage_state.last_ladder_score])
-	else:
-		hud.set_tally("%d × %d = +%d" % [chips_total, mult_total, stage_state.last_ladder_score])
-	hud.sync_score(stage_state.stage_score)
-	await get_tree().create_timer(score_hold).timeout
-
-func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = Color.WHITE) -> void:
-	var fl := Label.new()
-	fl.text = label_text
-	fl.add_theme_font_override("font", load("res://assets/fonts/Logic_Loop.ttf"))
-	fl.add_theme_font_size_override("font_size", 36)
-	fl.add_theme_color_override("font_color", text_color)
-	fl.add_theme_color_override("font_outline_color", Color.BLACK)
-	fl.add_theme_constant_override("outline_size", 16)
-	fl.position = at + Vector2(20, -10)
-	table_view.add_child(fl)
-	var t := create_tween().set_parallel(true)
-	t.tween_property(fl, "position:y", fl.position.y - 40, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(fl, "modulate:a", 0.0, 0.4)
-	t.chain().tween_callback(fl.queue_free)
-
-func _animate_card_score(visual : TextureRect) -> void :
-	var t := create_tween().parallel()
-	t.tween_property(visual, "scale", Vector2(1.60, 1.60), 0.05).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(visual, "rotation_degrees", 10, 0.06).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(visual, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-
-func _animate_steal():
-	var back : Play = stage_state.ladder.back()
-	for play in stage_state.ladder:
-		if play != back:
-			if play.who == Play.Who.HOUSE:
-				for card in play.cards:
-					var visual = table_view.find_visual(card)
-					if visual:
-						var tween : Tween = create_tween()
-						tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3).set_trans(Tween.TRANS_CUBIC)
-		else:
-			for card in play.cards:
-				var visual = table_view.find_visual(card)
-				if visual:
-					visual.queue_free()
-			await get_tree().create_timer(score_beat).timeout
-	await get_tree().create_timer(0.2).timeout
-	await _animate_ladder_score()
-
-func _animate_collapse():
-	for play in stage_state.ladder:
-		for card in play.cards:
-			var visual = table_view.find_visual(card)
-			if visual:
-				var tween : Tween = create_tween()
-				tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
-	await get_tree().create_timer(0.2).timeout
-
+## The two-phase turn: the brain has already scored; the pile is still on the table.
+## Show it, play the drama for how the ladder ended, THEN let the brain sweep.
 func _end_ladder_sequence(kind : EndKind):
 	_refresh()
 	animating = true
 	match kind:
 		EndKind.CAP:
-			await _animate_ladder_score()
+			await score_animator.animate_cap(
+				stage_state.last_receipt, stage_state.last_ladder_score, stage_state.stage_score)
 		EndKind.STEAL:
-			await _animate_steal()
+			await score_animator.animate_steal(
+				stage_state.ladder, stage_state.last_receipt, stage_state.last_ladder_score, stage_state.stage_score)
 		EndKind.COLLAPSE:
-			await _animate_collapse()
+			await score_animator.animate_collapse(stage_state.ladder)
 	animating = false
 	stage_state.finish_ladder()
 	_refresh()
