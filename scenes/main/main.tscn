@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/table_view.tscn" id="8_table"]
 [ext_resource type="Script" path="res://scripts/ui/score_animator.gd" id="9_anim"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hand_view.tscn" id="10_hand"]
 
 [sub_resource type="Gradient" id="Gradient_ow5a4"]
 colors = PackedColorArray(0.23753676, 0.22414449, 0.21381897, 1, 0.8766528, 1, 1, 1)
@@ -64,7 +65,8 @@ mouse_filter = 2
 texture = ExtResource("3_ow5a4")
 stretch_mode = 1
 
-[node name="HandArea" type="Control" parent="." unique_id=486850450]
+[node name="HandView" parent="." instance=ExtResource("10_hand")]
+unique_name_in_owner = true
 layout_mode = 1
 anchor_left = 0.3
 anchor_top = 1.0
