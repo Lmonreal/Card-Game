@@ -1,13 +1,15 @@
-[gd_scene format=3 uid="uid://dwicaisyv8dto"]
+[gd_scene format=3 uid="uid://be7k5ypbb0km0"]
 
-[ext_resource type="Script" path="res://scripts/ui/main.gd" id="1_hyk8p"]
+[ext_resource type="Script" uid="uid://c2byppiqmp8lr" path="res://scripts/ui/table_screen.gd" id="1_hyk8p"]
 [ext_resource type="Shader" uid="uid://dcjbliq43iypp" path="res://assets/PatternMix/shader_background.gdshader" id="2_k2fmo"]
 [ext_resource type="Texture2D" uid="uid://caltheqiudx7f" path="res://assets/PatternMix/color/arrow_02.png" id="3_ow5a4"]
+[ext_resource type="FontFile" uid="uid://ouhmp1eykgt4" path="res://assets/fonts/Logic_Loop.ttf" id="4_6q06x"]
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
+[ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/action_bar.tscn" id="6_actbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/table_view.tscn" id="8_table"]
-[ext_resource type="Script" uid="uid://bxjoatxud0bss" path="res://scripts/ui/score_animator.gd" id="9_anim"]
+[ext_resource type="Script" path="res://scripts/ui/score_animator.gd" id="9_anim"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hand_view.tscn" id="10_hand"]
 
 [sub_resource type="Gradient" id="Gradient_ow5a4"]
@@ -63,10 +65,9 @@ mouse_filter = 2
 texture = ExtResource("3_ow5a4")
 stretch_mode = 1
 
-[node name="HandView" parent="." unique_id=771837021 instance=ExtResource("10_hand")]
+[node name="HandView" parent="." instance=ExtResource("10_hand")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.3
 anchor_top = 1.0
 anchor_right = 0.9
@@ -75,10 +76,9 @@ offset_top = -298.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TableView" parent="." unique_id=322791596 instance=ExtResource("8_table")]
+[node name="TableView" parent="." instance=ExtResource("8_table")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.42400002
 anchor_top = 0.177
 anchor_right = 0.57500005
@@ -107,11 +107,11 @@ mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Hud" parent="." unique_id=886568954 instance=ExtResource("7_hud")]
+[node name="Hud" parent="." instance=ExtResource("7_hud")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="ScoreAnimator" type="Node" parent="." unique_id=249390532]
+[node name="ScoreAnimator" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("9_anim")
 

@@ -1,4 +1,8 @@
 extends Control
+## TableScreen — the coordinator for one stage. Owns the brain, wires the views,
+## runs the two-phase ladder sequence. Emits stage_finished when the stage ends.
+
+signal stage_finished(won : bool, score : int)
 
 const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var hand_view: Control = %HandView
@@ -8,10 +12,20 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var score_animator: Node = %ScoreAnimator
 @onready var house_area: Control = $HouseArea
 
-var stage_state : StageState = StageState.new()
+var stage_state : StageState = _new_stage()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
 var animating : bool = false
 enum EndKind {CAP, STEAL, COLLAPSE}
+
+
+## A stage configures itself from the run. Falls back to the brain's defaults
+## when there is no run (e.g. running this scene alone with F6).
+func _new_stage() -> StageState:
+	var s := StageState.new()
+	if GameManager.run:
+		s.target_score = GameManager.run.target_score
+	return s
+
 
 func _ready() -> void:
 	# Signals up: the bar announces, the coordinator decides.
@@ -74,7 +88,7 @@ func _on_fold_button_pressed() -> void:
 func _on_reset_button_pressed() -> void:
 	if animating:
 		return
-	stage_state = StageState.new()
+	stage_state = _new_stage()
 	hud.sync_score(0)
 	last_turn_result = StageState.TurnResult.CONTINUES
 	hand_view.clear_selection()
@@ -131,3 +145,5 @@ func _end_ladder_sequence(kind : EndKind):
 	animating = false
 	stage_state.finish_ladder()
 	_refresh()
+	if stage_state.game_state != StageState.GameState.PLAYING:
+		stage_finished.emit(stage_state.game_state == StageState.GameState.WON, stage_state.stage_score)
