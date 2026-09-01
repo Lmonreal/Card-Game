@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://ouhmp1eykgt4" path="res://assets/fonts/Logic_Loop.ttf" id="4_6q06x"]
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
 [ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/action_bar.tscn" id="6_actbar"]
 
 [sub_resource type="Gradient" id="Gradient_ow5a4"]
 colors = PackedColorArray(0.23753676, 0.22414449, 0.21381897, 1, 0.8766528, 1, 1, 1)
@@ -96,82 +97,9 @@ offset_bottom = -0.36001587
 grow_horizontal = 0
 mouse_filter = 2
 
-[node name="PlayButton" type="Button" parent="." unique_id=189380150]
+[node name="ActionBar" parent="." unique_id=1012210958 instance=ExtResource("6_actbar")]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.8
-anchor_right = 0.2
-anchor_bottom = 0.9
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_colors/font_color = Color(0.5019608, 0.8, 1, 1)
-theme_override_colors/font_hover_color = Color(0.43137255, 0.6862745, 0.85882354, 1)
-theme_override_constants/outline_size = 16
-theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 32
-text = "PLAY"
-
-[node name="StealButton" type="Button" parent="." unique_id=195481847]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.65
-anchor_right = 0.2
-anchor_bottom = 0.75
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_colors/font_color = Color(0.83137256, 0.2901961, 0.24705882, 1)
-theme_override_colors/font_hover_color = Color(0.83137256, 0.2901961, 0.24705882, 1)
-theme_override_constants/outline_size = 16
-theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 32
-text = "STEAL"
-
-[node name="FoldButton" type="Button" parent="." unique_id=1099704752]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.5
-anchor_right = 0.2
-anchor_bottom = 0.6
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 32
-text = "FOLD"
-
-[node name="ResetButton" type="Button" parent="." unique_id=767702143]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_top = 0.4
-anchor_right = 0.55
-anchor_bottom = 0.5
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_constants/outline_size = 16
-theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 32
-text = "RESET"
-
-[node name="SortButton" type="Button" parent="." unique_id=2081570337]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.55
-anchor_top = 0.96500003
-anchor_right = 0.577
-anchor_bottom = 1.0
-offset_top = -0.20007324
-offset_right = -0.8400879
-grow_horizontal = 2
-grow_vertical = 0
-theme = ExtResource("5_ow5a4")
-theme_override_font_sizes/font_size = 16
-text = "Sort"
 
 [node name="StageTarget" type="Label" parent="." unique_id=1884920626]
 layout_mode = 1
@@ -281,6 +209,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=95099679]
+visible = false
 z_index = 10
 material = SubResource("ShaderMaterial_6q06x")
 layout_mode = 1
@@ -291,9 +220,3 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 0)
-
-[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="StealButton" to="." method="_on_steal_button_pressed"]
-[connection signal="pressed" from="FoldButton" to="." method="_on_fold_button_pressed"]
-[connection signal="pressed" from="ResetButton" to="." method="_on_reset_button_pressed"]
-[connection signal="pressed" from="SortButton" to="." method="_on_sort_button_pressed"]

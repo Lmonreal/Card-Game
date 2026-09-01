@@ -8,10 +8,7 @@ const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var ladders_left: Label = $LaddersLeft
 @onready var last_reason: Label = $LastReason
 @onready var message_label: Label = $MessageLabel
-@onready var play_button: Button = $PlayButton
-@onready var steal_button: Button = $StealButton
-@onready var fold_button: Button = $FoldButton
-@onready var reset_button: Button = $ResetButton
+@onready var action_bar: Control = %ActionBar
 @onready var last_score: Label = $LastScore
 @onready var house_area: Control = $HouseArea
 
@@ -26,6 +23,12 @@ var displayed_score : int
 enum EndKind {CAP, STEAL, COLLAPSE}
 
 func _ready() -> void:
+	# Signals up: the bar announces, the coordinator decides.
+	action_bar.play_pressed.connect(_on_play_button_pressed)
+	action_bar.steal_pressed.connect(_on_steal_button_pressed)
+	action_bar.fold_pressed.connect(_on_fold_button_pressed)
+	action_bar.sort_pressed.connect(_on_sort_button_pressed)
+	action_bar.reset_pressed.connect(_on_reset_button_pressed)
 	_refresh()
 	
 func _get_selected() -> Array[Card]:
@@ -128,11 +131,7 @@ func _update_labels() -> void :
 
 func _update_visibility() -> void :
 	var playing : bool = stage_state.game_state == StageState.GameState.PLAYING
-	# Buttons
-	play_button.disabled = not playing
-	steal_button.disabled = not playing
-	fold_button.disabled = not playing
-	reset_button.visible = not playing
+	action_bar.set_playing(playing)
 	# Labels
 	steals_left.visible = playing
 	ladders_left.visible = playing
