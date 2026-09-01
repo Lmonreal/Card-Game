@@ -3,13 +3,8 @@ extends Control
 const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var hand_area: Control = $HandArea
 @onready var table_area: Control = $TableArea
-@onready var stage_target: Label = $StageTarget
-@onready var steals_left: Label = $StealsLeft
-@onready var ladders_left: Label = $LaddersLeft
-@onready var last_reason: Label = $LastReason
-@onready var message_label: Label = $MessageLabel
 @onready var action_bar: Control = %ActionBar
-@onready var last_score: Label = $LastScore
+@onready var hud: Control = %Hud
 @onready var house_area: Control = $HouseArea
 
 var stage_state : StageState = StageState.new()
@@ -19,7 +14,6 @@ var hover_slot : int = -1   # slot the dragged card is currently over; -1 = none
 var animating : bool = false
 var score_beat : float = 0.50    # pause between count-up steps
 var score_hold : float = 0.4     # pause before/after the final total reveal
-var displayed_score : int
 enum EndKind {CAP, STEAL, COLLAPSE}
 
 func _ready() -> void:
@@ -46,8 +40,7 @@ func _on_play_button_pressed() -> void:
 
 func _refresh() -> void:
 	_draw_areas()
-	_update_labels()
-	_update_visibility()
+	_update_hud()
 
 func _control_refresh_helper(control : Control, cards : Array[Card], clickable : bool, face_down : bool) -> void :
 	for child in control.get_children():
@@ -96,7 +89,7 @@ func _on_reset_button_pressed() -> void:
 	if animating:
 		return
 	stage_state = StageState.new()
-	displayed_score = 0
+	hud.sync_score(0)
 	last_turn_result = StageState.TurnResult.CONTINUES
 	selected_cards.clear()
 	_refresh()
@@ -112,31 +105,22 @@ func _draw_areas() -> void :
 	_draw_table_pile()
 	_control_refresh_helper(house_area, stage_state.house_hand, false, true)
 
-func _update_labels() -> void :
-	stage_target.text = "%d / %d" % [displayed_score, stage_state.target_score]
-	steals_left.text = str(stage_state.steals_left) + " steals left"
-	ladders_left.text = str(stage_state.ladders_left) + " ladders left"
-	last_score.text = "+" + str(stage_state.last_ladder_score)
-	if last_turn_result == StageState.TurnResult.REJECTED:
-		last_reason.text = str(stage_state.Reason.keys()[stage_state.last_reason])
-	else:
-		last_reason.text = ""
-	if stage_state.game_state != StageState.GameState.PLAYING:
-		message_label.text = str(stage_state.GameState.keys()[stage_state.game_state])
-	elif stage_state.get_set_in_play().is_empty():
-		message_label.text = "YOU OPEN — play anything"
-	else:
-		message_label.text = ""
-
-
-func _update_visibility() -> void :
+## The coordinator reads the brain ONCE here and hands plain values to the views.
+## No view ever holds stage_state.
+func _update_hud() -> void:
 	var playing : bool = stage_state.game_state == StageState.GameState.PLAYING
+	hud.refresh({
+		"target_score": stage_state.target_score,
+		"steals_left": stage_state.steals_left,
+		"ladders_left": stage_state.ladders_left,
+		"last_ladder_score": stage_state.last_ladder_score,
+		"playing": playing,
+		"state_text": str(StageState.GameState.keys()[stage_state.game_state]),
+		"table_empty": stage_state.get_set_in_play().is_empty(),
+		"rejected": last_turn_result == StageState.TurnResult.REJECTED,
+		"reason_text": str(StageState.Reason.keys()[stage_state.last_reason]),
+	})
 	action_bar.set_playing(playing)
-	# Labels
-	steals_left.visible = playing
-	ladders_left.visible = playing
-	last_reason.visible = playing
-	message_label.visible = true   # empty string shows nothing while playing
 
 
 # ---- Drag / drop ----
@@ -214,24 +198,24 @@ func _animate_ladder_score() -> void:
 			_animate_card_score(visual)
 			_spawn_float_label("+%d" % step.chips, visual.position, Color(0.5, 0.8, 1.0))
 			chips_total += step.chips
-			last_score.text = "%d × %d" % [chips_total, mult_total]
+			hud.set_tally("%d × %d" % [chips_total, mult_total])
 			await get_tree().create_timer(score_beat).timeout
 			# Beat 2: mult, only if this card gives any. Future add-ons = more beats here.
 			if step.mult > 0:
 				_animate_card_score(visual)
 				_spawn_float_label("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
 				mult_total += step.mult
-				last_score.text = "%d × %d" % [chips_total, mult_total]
+				hud.set_tally("%d × %d" % [chips_total, mult_total])
 				await get_tree().create_timer(score_beat).timeout
 			visual.queue_free()
 	# Finale: hold, then reveal the product (Going Out shows as more than the product).
 	await get_tree().create_timer(score_hold).timeout
 	var product : int = chips_total * mult_total
 	if stage_state.last_ladder_score > product:
-		last_score.text = "%d × %d ×2 = +%d" % [chips_total, mult_total, stage_state.last_ladder_score]
+		hud.set_tally("%d × %d ×2 = +%d" % [chips_total, mult_total, stage_state.last_ladder_score])
 	else:
-		last_score.text = "%d × %d = +%d" % [chips_total, mult_total, stage_state.last_ladder_score]
-	displayed_score = stage_state.stage_score
+		hud.set_tally("%d × %d = +%d" % [chips_total, mult_total, stage_state.last_ladder_score])
+	hud.sync_score(stage_state.stage_score)
 	await get_tree().create_timer(score_hold).timeout
 
 func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = Color.WHITE) -> void:

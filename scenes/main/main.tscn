@@ -7,6 +7,7 @@
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
 [ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/action_bar.tscn" id="6_actbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
 
 [sub_resource type="Gradient" id="Gradient_ow5a4"]
 colors = PackedColorArray(0.23753676, 0.22414449, 0.21381897, 1, 0.8766528, 1, 1, 1)
@@ -101,112 +102,9 @@ mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="StageTarget" type="Label" parent="." unique_id=1884920626]
+[node name="Hud" parent="." instance=ExtResource("7_hud")]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.007
-anchor_top = 0.013
-anchor_right = 0.053000003
-anchor_bottom = 0.069000006
-offset_left = -0.44000053
-offset_top = -0.03999996
-offset_right = 0.23999023
-offset_bottom = -0.5200043
-theme = ExtResource("5_ow5a4")
-theme_override_colors/font_color = Color(0.9157694, 0.9157693, 0.9157694, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 32
-text = "TEST"
-
-[node name="LastScore" type="Label" parent="." unique_id=40506875]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.455
-anchor_top = 0.029000001
-anchor_right = 0.544
-anchor_bottom = 0.081
-offset_left = 0.39996338
-offset_top = -0.3200016
-offset_right = -0.32019043
-offset_bottom = 3.5199966
-theme = ExtResource("5_ow5a4")
-theme_override_colors/font_color = Color(0.8638137, 0.86381376, 0.8638137, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_fonts/font = ExtResource("4_6q06x")
-theme_override_font_sizes/font_size = 36
-text = "+test"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="StealsLeft" type="Label" parent="." unique_id=963131870]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.008
-anchor_top = 0.075
-anchor_right = 0.053000003
-anchor_bottom = 0.13100001
-offset_left = -0.3600006
-offset_right = -0.76000977
-offset_bottom = -0.480011
-theme = ExtResource("5_ow5a4")
-theme_override_colors/font_color = Color(1, 0.34901962, 0.29803923, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_font_sizes/font_size = 32
-text = "Test"
-
-[node name="LaddersLeft" type="Label" parent="." unique_id=1660357436]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.008
-anchor_top = 0.143
-anchor_right = 0.053000003
-anchor_bottom = 0.19800001
-offset_left = -0.3600006
-offset_top = -0.44000244
-offset_right = -0.76000977
-offset_bottom = 0.1599884
-theme = ExtResource("5_ow5a4")
-theme_override_colors/font_color = Color(0.5019608, 0.8, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_font_sizes/font_size = 32
-text = "Test"
-
-[node name="LastReason" type="Label" parent="." unique_id=80074285]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.009000001
-anchor_top = 0.22600001
-anchor_right = 0.030000001
-anchor_bottom = 0.24700001
-offset_left = 0.7199993
-offset_top = -0.08001709
-offset_right = 0.3999977
-offset_bottom = 0.23999023
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-
-[node name="MessageLabel" type="Label" parent="." unique_id=997853316]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.393
-anchor_top = 0.054
-anchor_right = 0.614
-anchor_bottom = 0.17500001
-offset_left = -0.55999756
-offset_top = -0.3199997
-offset_right = -0.8800049
-offset_bottom = -1.5258789e-05
-theme = ExtResource("5_ow5a4")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_font_sizes/font_size = 32
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=95099679]
 visible = false
