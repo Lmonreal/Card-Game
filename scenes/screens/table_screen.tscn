@@ -90,19 +90,6 @@ offset_bottom = -0.120025635
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HouseArea" type="Control" parent="." unique_id=1891261076]
-layout_mode = 1
-anchor_left = 0.65400004
-anchor_top = 0.055000003
-anchor_right = 0.95300007
-anchor_bottom = 0.25500003
-offset_left = -0.6800537
-offset_top = -0.40000534
-offset_right = 0.9199219
-offset_bottom = -0.36001587
-grow_horizontal = 0
-mouse_filter = 2
-
 [node name="ActionBar" parent="." unique_id=1012210958 instance=ExtResource("6_actbar")]
 unique_name_in_owner = true
 layout_mode = 1

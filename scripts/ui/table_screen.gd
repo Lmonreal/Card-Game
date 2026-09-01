@@ -4,13 +4,11 @@ extends Control
 
 signal stage_finished(won : bool, score : int)
 
-const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var hand_view: HandView = %HandView
 @onready var table_view: TableView = %TableView
 @onready var action_bar: ActionBar = %ActionBar
 @onready var hud: Hud = %Hud
 @onready var score_animator: ScoreAnimator = %ScoreAnimator
-@onready var house_area: Control = $HouseArea
 
 var stage_state : StageState = _new_stage()
 var last_turn_result : StageState.TurnResult = StageState.TurnResult.CONTINUES
@@ -52,18 +50,6 @@ func _refresh() -> void:
 	_draw_areas()
 	_update_hud()
 
-## TEMP until HouseView exists: the House's face-down hand, drawn inert.
-func _draw_house(cards : Array[Card]) -> void:
-	for child in house_area.get_children():
-		child.queue_free()
-	for i in range(cards.size()):
-		var card_visual = CARD_VISUAL.instantiate()
-		card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		card_visual.card_data = cards[i]
-		card_visual.face_down = true
-		card_visual.position = Vector2(i * (house_area.size.x / cards.size()), 0)
-		house_area.add_child(card_visual)
-
 func _on_steal_button_pressed() -> void:
 	if animating:
 		return
@@ -103,7 +89,6 @@ func _on_sort_button_pressed() -> void:
 func _draw_areas() -> void :
 	hand_view.show_hand(stage_state.hand)
 	table_view.show_pile(stage_state.ladder)
-	_draw_house(stage_state.house_hand)
 
 ## The coordinator reads the brain ONCE here and hands plain values to the views.
 ## No view ever holds stage_state.
