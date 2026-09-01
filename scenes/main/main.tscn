@@ -8,6 +8,7 @@
 [ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="5_ow5a4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/action_bar.tscn" id="6_actbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/table_view.tscn" id="8_table"]
 
 [sub_resource type="Gradient" id="Gradient_ow5a4"]
 colors = PackedColorArray(0.23753676, 0.22414449, 0.21381897, 1, 0.8766528, 1, 1, 1)
@@ -72,7 +73,8 @@ offset_top = -298.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TableArea" type="Control" parent="." unique_id=1042919141]
+[node name="TableView" parent="." instance=ExtResource("8_table")]
+unique_name_in_owner = true
 layout_mode = 1
 anchor_left = 0.42400002
 anchor_top = 0.177

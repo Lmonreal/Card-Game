@@ -2,7 +2,7 @@ extends Control
 
 const CARD_VISUAL : PackedScene = preload("res://scenes/ui/card_visual.tscn")
 @onready var hand_area: Control = $HandArea
-@onready var table_area: Control = $TableArea
+@onready var table_view: Control = %TableView
 @onready var action_bar: Control = %ActionBar
 @onready var hud: Control = %Hud
 @onready var house_area: Control = $HouseArea
@@ -102,7 +102,7 @@ func _on_sort_button_pressed() -> void:
 
 func _draw_areas() -> void :
 	_control_refresh_helper(hand_area, stage_state.hand, true, false)
-	_draw_table_pile()
+	table_view.show_pile(stage_state.ladder)
 	_control_refresh_helper(house_area, stage_state.house_hand, false, true)
 
 ## The coordinator reads the brain ONCE here and hands plain values to the views.
@@ -171,27 +171,13 @@ func _on_card_clicked(card : Card, selected : bool) -> void:
 	else:
 		selected_cards.erase(card)
 
-func _draw_table_pile():
-	for child in table_area.get_children():
-		child.queue_free()
-	var step : int = 32
-	for j in range(stage_state.ladder.size()):
-		var play : Play = stage_state.ladder[j]
-		for i in range(play.cards.size()):
-			var card_visual = CARD_VISUAL.instantiate()
-			card_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			card_visual.card_data = play.cards[i]
-			var card_pitch : float = 39 * card_visual.card_scale * 0.20
-			card_visual.position = Vector2(i * card_pitch, (step) * j)
-			table_area.add_child(card_visual)
-
 func _animate_ladder_score() -> void:
 	var reverse_receipt = stage_state.last_receipt.duplicate()
 	reverse_receipt.reverse()
 	var chips_total : int = 0
 	var mult_total : int = 0
 	for step in reverse_receipt:
-		var visual := _find_table_visual(step.card)
+		var visual : Control = table_view.find_visual(step.card)
 		if visual:
 			visual.pivot_offset = visual.size / 2
 			# Beat 1: chips. Every card has these.
@@ -227,19 +213,11 @@ func _spawn_float_label(label_text : String, at : Vector2, text_color : Color = 
 	fl.add_theme_color_override("font_outline_color", Color.BLACK)
 	fl.add_theme_constant_override("outline_size", 16)
 	fl.position = at + Vector2(20, -10)
-	table_area.add_child(fl)
+	table_view.add_child(fl)
 	var t := create_tween().set_parallel(true)
 	t.tween_property(fl, "position:y", fl.position.y - 40, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	t.tween_property(fl, "modulate:a", 0.0, 0.4)
 	t.chain().tween_callback(fl.queue_free)
-
-func _find_table_visual(card : Card) -> Control:
-	for child in table_area.get_children():
-		if child.is_queued_for_deletion():
-			continue
-		if child.card_data == card:
-			return child
-	return null
 
 func _animate_card_score(visual : TextureRect) -> void :
 	var t := create_tween().parallel()
@@ -254,13 +232,13 @@ func _animate_steal():
 		if play != back:
 			if play.who == Play.Who.HOUSE:
 				for card in play.cards:
-					var visual = _find_table_visual(card)
+					var visual = table_view.find_visual(card)
 					if visual:
 						var tween : Tween = create_tween()
 						tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3).set_trans(Tween.TRANS_CUBIC)
 		else:
 			for card in play.cards:
-				var visual = _find_table_visual(card)
+				var visual = table_view.find_visual(card)
 				if visual:
 					visual.queue_free()
 			await get_tree().create_timer(score_beat).timeout
@@ -270,7 +248,7 @@ func _animate_steal():
 func _animate_collapse():
 	for play in stage_state.ladder:
 		for card in play.cards:
-			var visual = _find_table_visual(card)
+			var visual = table_view.find_visual(card)
 			if visual:
 				var tween : Tween = create_tween()
 				tween.tween_property(visual, "modulate", Color(0,0,0,0), 0.3)
