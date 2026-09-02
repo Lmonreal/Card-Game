@@ -26,7 +26,7 @@ func refresh(s : Dictionary) -> void:
 	if not s.playing:
 		message_label.text = s.state_text
 	elif s.table_empty:
-		message_label.text = "YOU OPEN — play anything"
+		message_label.text = "YOU OPEN - play anything"
 	else:
 		message_label.text = ""
 	steals_left.visible = s.playing

@@ -97,15 +97,19 @@ text = "Test"
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.009000001
-anchor_top = 0.22600001
-anchor_right = 0.030000001
-anchor_bottom = 0.24700001
-offset_left = 0.7199993
-offset_top = -0.08001709
-offset_right = 0.3999977
+anchor_left = 0.13700001
+anchor_top = 0.919
+anchor_right = 0.16000001
+anchor_bottom = 0.947
+offset_left = -0.040008545
+offset_top = 0.47998047
+offset_right = -0.2000122
 offset_bottom = 0.23999023
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme = ExtResource("3_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 16
 text = "TEST"
 
 [node name="MessageLabel" type="Label" parent="." unique_id=1101647804]

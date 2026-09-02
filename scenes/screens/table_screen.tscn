@@ -103,6 +103,7 @@ unique_name_in_owner = true
 script = ExtResource("9_anim")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=95099679]
+visible = false
 z_index = 10
 material = SubResource("ShaderMaterial_6q06x")
 layout_mode = 1

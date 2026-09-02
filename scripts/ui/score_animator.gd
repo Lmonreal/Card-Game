@@ -32,19 +32,24 @@ func animate_cap(receipt : Array[ScoreStep], ladder_score : int, new_total : int
 			_pop(visual)
 			_spawn_float("+%d" % step.chips, visual.position, Color(0.5, 0.8, 1.0))
 			chips_total += step.chips
-			_hud.set_tally("%d × %d" % [chips_total, mult_total])
+			_hud.set_tally("%d x %d" % [chips_total, mult_total])
 			await get_tree().create_timer(score_beat).timeout
 			# Beat 2: mult, only if this card gives any. Future add-ons = more beats here.
+			# HOUSE RULE: a check doesn't survive an await. Everything below the
+			# first await re-verifies `visual` before touching it; the math and
+			# tally run regardless — the score is the brain's truth, not the visual's.
 			if step.mult > 0:
-				_pop(visual)
-				_spawn_float("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
+				if is_instance_valid(visual):
+					_pop(visual)
+					_spawn_float("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
 				mult_total += step.mult
-				_hud.set_tally("%d × %d" % [chips_total, mult_total])
+				_hud.set_tally("%d x %d" % [chips_total, mult_total])
 				await get_tree().create_timer(score_beat).timeout
-			visual.queue_free()
+			if is_instance_valid(visual):
+				visual.queue_free()
 	# Finale: hold, reveal the equation, land the total.
 	await get_tree().create_timer(score_hold).timeout
-	_hud.set_tally("%d × %d = +%d" % [chips_total, mult_total, ladder_score])
+	_hud.set_tally("%d x %d = +%d" % [chips_total, mult_total, ladder_score])
 	_hud.sync_score(new_total)
 	await get_tree().create_timer(score_hold).timeout
 

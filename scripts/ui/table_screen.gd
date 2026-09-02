@@ -109,7 +109,15 @@ func _update_hud() -> void:
 
 
 ## HandView asked to move a card (drag-and-drop). The brain owns the order.
+## Same bouncer as the buttons: a refresh mid-animation frees the visuals
+## the animator is holding across its awaits.
 func _on_reorder_requested(from : int, to : int) -> void:
+	if animating:
+		# Refused — but the drag already moved visuals speculatively, so snap
+		# the hand back to the brain's truth. Hand only: a full _refresh would
+		# rebuild the table visuals the animator is holding.
+		hand_view.show_hand(stage_state.hand)
+		return
 	stage_state.move_card(from, to)
 	_refresh()
 
