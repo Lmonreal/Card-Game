@@ -1,10 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://be21sw24u0omc"]
 
-[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bagowltpe1um8" path="res://scripts/ui/hud.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://ouhmp1eykgt4" path="res://assets/fonts/Logic_Loop.ttf" id="2_font"]
 [ext_resource type="Theme" uid="uid://cx2juspapdaua" path="res://resources/defaultTheme32.tres" id="3_theme"]
 
-[node name="Hud" type="Control"]
+[node name="Hud" type="Control" unique_id=1195365771]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +14,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_script")
 
-[node name="StageTarget" type="Label" parent="."]
+[node name="StageTarget" type="Label" parent="." unique_id=1652610773]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -34,7 +34,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 32
 text = "TEST"
 
-[node name="LastScore" type="Label" parent="."]
+[node name="LastScore" type="Label" parent="." unique_id=1834449918]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -56,7 +56,7 @@ text = "+test"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StealsLeft" type="Label" parent="."]
+[node name="StealsLeft" type="Label" parent="." unique_id=147477663]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -74,7 +74,7 @@ theme_override_constants/outline_size = 16
 theme_override_font_sizes/font_size = 32
 text = "Test"
 
-[node name="LaddersLeft" type="Label" parent="."]
+[node name="LaddersLeft" type="Label" parent="." unique_id=1605262529]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -93,7 +93,7 @@ theme_override_constants/outline_size = 16
 theme_override_font_sizes/font_size = 32
 text = "Test"
 
-[node name="LastReason" type="Label" parent="."]
+[node name="LastReason" type="Label" parent="." unique_id=794045476]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -106,8 +106,9 @@ offset_top = -0.08001709
 offset_right = 0.3999977
 offset_bottom = 0.23999023
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "TEST"
 
-[node name="MessageLabel" type="Label" parent="."]
+[node name="MessageLabel" type="Label" parent="." unique_id=1101647804]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -124,5 +125,6 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 16
 theme_override_font_sizes/font_size = 32
+text = "TEST"
 horizontal_alignment = 1
 vertical_alignment = 1

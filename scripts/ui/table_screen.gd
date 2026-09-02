@@ -123,8 +123,7 @@ func _end_ladder_sequence(kind : EndKind):
 			await score_animator.animate_cap(
 				stage_state.last_receipt, stage_state.last_ladder_score, stage_state.stage_score)
 		EndKind.STEAL:
-			await score_animator.animate_steal(
-				stage_state.ladder, stage_state.last_receipt, stage_state.last_ladder_score, stage_state.stage_score)
+			await score_animator.animate_steal(stage_state.ladder)
 		EndKind.COLLAPSE:
 			await score_animator.animate_collapse(stage_state.ladder)
 	animating = false

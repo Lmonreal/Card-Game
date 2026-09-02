@@ -5,20 +5,20 @@
 [ext_resource type="Texture2D" uid="uid://caltheqiudx7f" path="res://assets/PatternMix/color/arrow_02.png" id="3_ow5a4"]
 [ext_resource type="Shader" uid="uid://t1if7lclkj4f" path="res://assets/PatternMix/scanlines.gdshader" id="4_l3cfh"]
 [ext_resource type="PackedScene" path="res://scenes/ui/action_bar.tscn" id="6_actbar"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" uid="uid://be21sw24u0omc" path="res://scenes/ui/hud.tscn" id="7_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/table_view.tscn" id="8_table"]
 [ext_resource type="Script" uid="uid://bxjoatxud0bss" path="res://scripts/ui/score_animator.gd" id="9_anim"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hand_view.tscn" id="10_hand"]
 
 [sub_resource type="Gradient" id="Gradient_ow5a4"]
-colors = PackedColorArray(0.23753676, 0.22414449, 0.21381897, 1, 0.8766528, 1, 1, 1)
+colors = PackedColorArray(0.26982778, 0.21719962, 0.14674452, 1, 0.8766528, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ow5a4"]
 gradient = SubResource("Gradient_ow5a4")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c7e0"]
 shader = ExtResource("2_k2fmo")
-shader_parameter/pixelated = true
+shader_parameter/pixelated = false
 shader_parameter/pattern_speed = Vector2(0, 0)
 shader_parameter/pattern_size = Vector2(4, 4)
 shader_parameter/rotation = 0.0
@@ -103,7 +103,6 @@ unique_name_in_owner = true
 script = ExtResource("9_anim")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=95099679]
-visible = false
 z_index = 10
 material = SubResource("ShaderMaterial_6q06x")
 layout_mode = 1

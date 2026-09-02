@@ -49,25 +49,22 @@ func animate_cap(receipt : Array[ScoreStep], ladder_score : int, new_total : int
 	await get_tree().create_timer(score_hold).timeout
 
 
-## Steal: the House's earlier sets burn, the stolen set (ladder.back()) simply
-## leaves — it's in the player's hand now — then the player's cards count up.
-func animate_steal(ladder : Array[Play], receipt : Array[ScoreStep], ladder_score : int, new_total : int) -> void:
+## Steal: steals don't score. The stolen set (ladder.back()) simply leaves —
+## it's in the player's hand now — and everything else on the table burns.
+func animate_steal(ladder : Array[Play]) -> void:
 	var loot : Play = ladder.back()
 	for play in ladder:
-		if play != loot:
-			if play.who == Play.Who.HOUSE:
-				for card in play.cards:
-					var visual : Control = _table.find_visual(card)
-					if visual:
-						create_tween().tween_property(visual, "modulate", Color(0, 0, 0, 0), 0.3).set_trans(Tween.TRANS_CUBIC)
-		else:
+		if play == loot:
 			for card in play.cards:
 				var visual : Control = _table.find_visual(card)
 				if visual:
 					visual.queue_free()
-			await get_tree().create_timer(score_beat).timeout
-	await get_tree().create_timer(0.2).timeout
-	await animate_cap(receipt, ladder_score, new_total)
+		else:
+			for card in play.cards:
+				var visual : Control = _table.find_visual(card)
+				if visual:
+					create_tween().tween_property(visual, "modulate", Color(0, 0, 0, 0), 0.3).set_trans(Tween.TRANS_CUBIC)
+	await get_tree().create_timer(0.5).timeout
 
 
 ## Collapse: the whole pile fades. Nothing counts.

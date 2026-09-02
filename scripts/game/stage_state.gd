@@ -103,14 +103,14 @@ func calc_ladder_score(include_house_claim : bool) -> int:
 
 func fold(is_stealing : bool) -> void:
 	if is_stealing and steals_left > 0:
-		last_ladder_score = calc_ladder_score(false)
-		last_receipt = build_receipt(false)
 		hand.append_array(get_set_in_play())
-		stage_score += last_ladder_score
 		steals_left -= 1
 	else:
-		last_ladder_score = 0
-		last_receipt.clear()
+		hand.clear()
+		refill_hand(hand, deck)
+		sort_hand(hand)
+	last_ladder_score = 0
+	last_receipt.clear()
 	next_opener = Play.Who.HOUSE
 
 
