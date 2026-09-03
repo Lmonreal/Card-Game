@@ -38,13 +38,12 @@ func animate_cap(receipt : Array[ScoreStep], ladder_score : int, new_total : int
 			# HOUSE RULE: a check doesn't survive an await. Everything below the
 			# first await re-verifies `visual` before touching it; the math and
 			# tally run regardless — the score is the brain's truth, not the visual's.
-			if step.mult > 0:
-				if is_instance_valid(visual):
-					_pop(visual)
-					_spawn_float("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
-				mult_total += step.mult
-				_hud.set_tally("%d x %d" % [chips_total, mult_total])
-				await get_tree().create_timer(score_beat).timeout
+			if is_instance_valid(visual):
+				_pop(visual)
+				_spawn_float("+%d" % step.mult, visual.position, Color(1.0, 0.35, 0.3))
+			mult_total += step.mult
+			_hud.set_tally("%d x %d" % [chips_total, mult_total])
+			await get_tree().create_timer(score_beat).timeout
 			if is_instance_valid(visual):
 				visual.queue_free()
 	# Finale: hold, reveal the equation, land the total.
@@ -86,10 +85,10 @@ func animate_collapse(ladder : Array[Play]) -> void:
 
 func _pop(visual : Control) -> void:
 	var t := create_tween().parallel()
-	t.tween_property(visual, "scale", Vector2(1.60, 1.60), 0.05).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(visual, "rotation_degrees", 10, 0.06).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(visual, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-	t.tween_property(visual, "rotation_degrees", 0, 0.03).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(visual, "scale", Vector2(1.60, 1.60), 0.1).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(visual, "rotation_degrees", 10, 0.12).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(visual, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(visual, "rotation_degrees", 0, 0.06).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 
 func _spawn_float(label_text : String, at : Vector2, text_color : Color = Color.WHITE) -> void:
@@ -104,5 +103,5 @@ func _spawn_float(label_text : String, at : Vector2, text_color : Color = Color.
 	_table.add_child(fl)
 	var t := create_tween().set_parallel(true)
 	t.tween_property(fl, "position:y", fl.position.y - 40, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(fl, "modulate:a", 0.0, 0.4)
+	t.tween_property(fl, "modulate:a", 0.0, 0.8)
 	t.chain().tween_callback(fl.queue_free)

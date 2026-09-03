@@ -83,17 +83,17 @@ func play_selected(cards : Array[Card]) -> TurnResult:
 	if house_answer == Response.ANSWERED:
 		return TurnResult.CONTINUES
 	else:
-		last_ladder_score = calc_ladder_score(true)
-		last_receipt = build_receipt(true)
+		last_ladder_score = calc_ladder_score()
+		last_receipt = build_receipt()
 		stage_score += last_ladder_score
 		next_opener = Play.Who.PLAYER
 		return TurnResult.CAPPED
 
 
-func calc_ladder_score(include_house_claim : bool) -> int:
+func calc_ladder_score() -> int:
 	var scored_chips : int = 0
 	var scored_mult : int = 0
-	var receipt : Array[ScoreStep] = build_receipt(include_house_claim)
+	var receipt : Array[ScoreStep] = build_receipt()
 	for score_step in receipt:
 		scored_chips += score_step.chips
 		scored_mult += score_step.mult
@@ -196,18 +196,14 @@ func _lowest_full_set(all_sets : Array[Array]) -> Array[Card] :
 			break
 	return candidate
 
-func build_receipt(include_house_claim : bool) -> Array[ScoreStep]:
+func build_receipt() -> Array[ScoreStep]:
 	var receipt : Array[ScoreStep] = []
 	for play in ladder:
-		if play.who == Play.Who.HOUSE and !include_house_claim:
-			#burn()
-			continue
 		for card in play.cards:
 			var score_step = ScoreStep.new()
 			score_step.card = card
 			score_step.chips = card.chips
-			if play.who == Play.Who.PLAYER:
-				score_step.mult = card.mult
+			score_step.mult = card.mult
 			receipt.append(score_step)
 	return receipt
 
